@@ -1,18 +1,26 @@
 <?
 // file configs //
 require_once("config.php");
+if($config['db']['host'] == ''){
+	// not configured, we probably need to install //
+	header('Location: install.php');
+	exit;
+}
+
 
 $alert = array();
 $warning = array();
+$notice = array();
 
 // db connectors and functions //
 require_once("database.php");
 $db = new Database();
+
+
 // general functions //
 require_once("General.php");
 $gen = new General();
 
-// general functions //
 require_once("Pages.php");
 $pages = new Pages();
 
@@ -71,14 +79,13 @@ else{
 
 
 
-// defaults //
-$headers['title'] = ($headers['title'] ? $config['app_name'].' '.$config['app_version'].' - '.$headers['title'] : $config['app_name'].' '.$config['app_version']);
+
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title><?=$headers['title'];?></title>
+	<title><?=($pages->title ? $config['app_name'].' '.$config['app_version'].' - '.$pages->title : $config['app_name'].' '.$config['app_version']);?></title>
 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
@@ -152,101 +159,18 @@ $headers['title'] = ($headers['title'] ? $config['app_name'].' '.$config['app_ve
     </nav>
 
 
-    
-<!-- Sign Up For BFX Modal -->
-<div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="signUpModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-      	<div class="pull-left" style="margin-right:20px;font-size: 22px;">
-            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
-        </div>
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="signUpModalLabel">Save 10% On All Fees For 30 Days When You Sign Up Here</h4>
-      </div>
-      <div class="modal-body">
-      	<p>If you sign up for Bitfinex.com using this <a href="https://www.bitfinex.com/?refcode=vsAnxuo5bM">referal link</a> ( Code: vsAnxuo5bM ), you'll get 10% off all fees on trade and swap activity for the first 30 days.</p>
-        <p>Doing so costs you nothing, and supports the continued development of this software.</p>
-        <p>If you do sign up using our Referal code, <strong>make sure to <a href="mailto:<?=$config['app_support_email'];?>">send us an email</a>, and we'll add you to our supporter list</strong>.  Supporters get first access to <?=$config['app_name'];?> updates, priority technical support ( when available ), and priority when requesting new features.</p>
-      	<p style="text-align:center"><a href="https://www.bitfinex.com/?refcode=vsAnxuo5bM" class="btn btn-success btn-lg" style="width:250px;" target="bfx">Join Bitfinex Now!</a></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+<? 
+$gen->showSiteModals();
 
-<!-- Donate Modal -->
-<div class="modal fade" id="donateModal" tabindex="-1" role="dialog" aria-labelledby="donateModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-      	<div class="pull-left" style="margin-right:20px;font-size: 22px;">
-            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
-        </div>
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="donateModalLabel">Donate To Support Further Development!</h4>
-      </div>
-      <div class="modal-body">
-      	<p>Developing this software, and testing the various strategies for lending that led to its development have taken significant time and effort.  If you find this software useful, please send a small donation our way.  All donations support the continued development of this software, and help to cover my distribution and support costs.</p>
-        <p>If you do send a donation,  <strong>make sure to <a href="mailto:<?=$config['app_support_email'];?>m">send us an email</a>, and we'll add you to our supporter list</strong>.  Supporters get first access to <?=$config['app_name'];?> updates, priority technical support ( when available ), and priority when requesting new features.</p>
-      	<p>You can send donations to:</p>
-        <div class="media" style="border-bottom:1px solid #e5e5e5;padding-bottom:20px;" >
-          <a class="media-left">
-            <img src="img/bitcoin_donate.png" alt="Dontate Bitcoin: 1LtVC2TE88b9zJcf6NFk4fzupM74QGUXQB">
-          </a>
-          <div class="media-body" style="vertical-align: middle;">
-            <h4 class="media-heading">Bitcoin: 1LtVC2TE88b9zJcf6NFk4fzupM74QGUXQB</h4>
-          </div>
-        </div>
-        <div class="media" style="padding-top:20px;">
-          <a class="media-left">
-            <img src="img/litecoin_donate.png" alt="Dontate Litecoin: LgKWYe7uisDkfz2LDeYi7tKEHukJdoziyp">
-          </a>
-          <div class="media-body" style="vertical-align: middle;">
-            <h4 class="media-heading">Litecoin: LgKWYe7uisDkfz2LDeYi7tKEHukJdoziyp</h4>
-          </div>
-        </div>
-      	</div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+// is config writable?  warn them//
+$configFile = getcwd().'/inc/config.php';
+if (is_writable($configFile) && $_SESSION['userid']!='') {$warning[] = "Your Config File Seems to be writable.  You should change this to read only for security reasons!<br> (chmod 644 ".$configFile." )";}
 
-<!-- Sign Up For BFX Modal -->
-<div class="modal fade" id="disclaimerModal" tabindex="-1" role="dialog" aria-labelledby="disclaimerModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-      	<div class="pull-left" style="margin-right:20px;font-size: 22px;">
-            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
-        </div>
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="disclaimerModalLabel"><?=$config['app_name'].' '.$config['app_version'];?> and Terms of Use</h4>
-      </div>
-      <div class="modal-body">
-      	<p>Alright, we could put a big huge block of text here written by dozens of lawyers requiring you to sign away your first born child and all your Dogecoin (are those still a thing?), but I'd rather keep this simple and straightforward.  So, heres the deal:</p>
-        <h4>The "Deal"</h4>
-        <p>This software is provided as is, with no warrantee or guarantee or promise of any kind.  We're pretty sure it works, at least for the most part, and we use it ourselves.  But there's probably a few things that don't work, it is software after all, and <em><strong>ALL</strong></em> software has at least a few bugs ( <a href="mailto:<?=$config['app_support_email'];?>">report them here</a> ).  We did our best to insure that those bugs are small, and not show stopping, but we don't even promise this.</p>
-        <p>More importantly, you will be providing your BFX API Key to this software in order for it to function.  This comes with a lot of security risks.  This bot basically has full access to your Bitfinex Account.  It has to in order to be useful and do anything.  The API currently limits actions that can be taken, so removing money from your account isn't possible, but we can't promise their API will be this way forever. Besides, if someone malicious did get access to your API Key, the may not be able to directly take your money, but they could force your account to make a bunch of ridiculous orders or something else that you probably wouldn't be too happy about.</p>
-        <p> We've done our best to secure this Bot against hacker attacks, but at the end of the day security for this bot, and the server it lives on, is <em><strong>YOUR</strong></em> responsibility.
-        	Follow all security best practices, make sure to password protect everything, don't give anyone you don't trust explicitly access to the bot, don't advertise that you've installed it on your servers and make yourself a target, etc.</p>
-         <p>When you download this software, make sure to only download it from the original GitHub repository.  Don't EVER DOWNLOAD any software from an untrusted source.  They could very easily modify the software to steal everything in your Bitfinex account.</p>
-         <p>Also, remember you have the full source code, right here, in your hands.  Feel free to check through the code, just to make sure you understand whats happening and that we're not doing anything Nefarious with your API access (we're not, we promise, but don't take our word for it, look through the code).</p>
-         <p>Huh, turns out that was a bit longer than I intended after all....   Lets make this easier:</p>
-		<h3>TL;DR</h3>
-		<p><em><strong>Use At Your Own Risk.  Something goes wrong, not our problem!</strong></em></p>
-         
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+// does install.php still exist?  we should delete it... //
+$installFile = getcwd().'/install.php';
+if (file_exists($installFile) && $_SESSION['userid']!='') {$notice[] = "Your Install File Seems to still exist.  Its probably a good idea to delete this file, as you won't need it anymore and it could be a secuirty issue.<br>  (Delete the file ".$installFile." )";}
 
+
+?>
 
 <div class="container">

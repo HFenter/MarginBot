@@ -126,9 +126,10 @@ class Bitfinex{
 	
 	/* Grab performace history and store it in a local database */
 	function bitfinex_updateHistory($numDays=10,  $sinceLast=0){
+		global $config;
 		// no start date set, so grab the last timestamp from the db //
 		if($sinceLast==0){
-			$sql = "SELECT trans_id from `BFXLendTracking` WHERE user_id = '".$this->db->escapeStr($this->userid)."' ORDER BY trans_id DESC LIMIT 1";
+			$sql = "SELECT trans_id from `".$config['db']['prefix']."Tracking` WHERE user_id = '".$this->db->escapeStr($this->userid)."' ORDER BY trans_id DESC LIMIT 1";
 			$lastId = $this->db->query($sql);
 			$sinceLast = $lastId[0]['id']+1;
 			if($sinceLast <=1){
@@ -145,7 +146,7 @@ class Bitfinex{
 		foreach($ledgerHistory as $l){
 			// check its a swap payment //
 			if($l['description'] == 'Swap Payment on wallet deposit'){
-				$sql = "INSERT into `BFXLendTracking` (`user_id`, `trans_id`, `date`, `dep_balance`,`swap_payment`,`average_return`) VALUES 
+				$sql = "INSERT into `".$config['db']['prefix']."Tracking` (`user_id`, `trans_id`, `date`, `dep_balance`,`swap_payment`,`average_return`) VALUES 
 					('".$this->db->escapeStr($this->userid)."', '".$this->db->escapeStr($l['timestamp'])."', '".$this->db->escapeStr(date('Y-m-d', $l['timestamp']))."', '".$this->db->escapeStr($l['balance'])."','".$this->db->escapeStr($l['amount'])."','".$this->db->escapeStr(round((($l['amount'] / $l['balance']) * 100),6))."')";
 				$upd = $this->db->iquery($sql);
 				//print_r($upd);
@@ -351,7 +352,8 @@ class Bitfinex{
 	
 	/* Grab current deposit balance */
 	function bitfinex_getAccountSettings(){
-		$sql = "SELECT * from `BFXLendBotVars` WHERE id = '".$this->db->escapeStr($this->userid)."' LIMIT 1";
+		global $config;
+		$sql = "SELECT * from `".$config['db']['prefix']."Vars` WHERE id = '".$this->db->escapeStr($this->userid)."' LIMIT 1";
 		$userSettings = $this->db->query($sql);
 		if($userSettings[0]['minlendrate'] !=''){
 			/* Good user, set all the variables */

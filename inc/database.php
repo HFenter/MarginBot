@@ -24,9 +24,6 @@ class Database{
     		printf("Could not connect to Database: %s\n", $this->database_link->connect_error);
     		exit();
 		}
-		//or die("Could not connect to MySQL<br>Error: ".mysql_error());
-		//$this->database_link = mysql_connect($this->database_host, $this->database_user, $this->database_pass) or die("Could not connect to MySQL<br>Error: ".mysql_error());
-		//mysql_select_db($this->database_name) or die ("Could not open database: ". $this->database_name);        
 	}
 	function escapeStr($str){
 		return $this->database_link->real_escape_string($str);
@@ -34,7 +31,6 @@ class Database{
 	
 	function disconnect(){
         if(isset($this->database_link)) $this->database_link->close();
-        //else mysql_close();    
     }
     
 	// Update / Delete / Insert
@@ -49,7 +45,6 @@ class Database{
 		}
         $return[num] = $this->database_link->affected_rows;
         $return[id] = $this->database_link->insert_id;
-		//$this->database_link->close();
         return $return;
     }
     // select
@@ -69,7 +64,6 @@ class Database{
 		{
 		  $returnArray[$i++]=$row;
 		}
-		//$result->close();
         return $returnArray;
     }
     
@@ -80,7 +74,6 @@ class Database{
 		
 		$result = $this->database_link->query($SQLDBE);
         $errorId = $this->database_link->insert_id;
-		//$result->close();
         die('<b>THERE HAS BEEN A DATABASE ERROR</b><br>Please <a href="'.$config['admin_email'].'?subject=DB Error: '.$errorId.'">Contact Support</a> If this error persists.<br><small>' . $errno . ' - ' . $error . '<br></small>');
 		}
     

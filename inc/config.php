@@ -9,10 +9,13 @@ $config['app_support_url'] = 'http://fuckedgox.com/MBot/';
 $config['app_support_email'] = 'marginbot@fuckedgox.com';
 
 // Local Database Connection Info //
-$config['db']['host'] = 'localhost';
-$config['db']['dbname'] = 'localdb';
-$config['db']['dbuser'] = 'localuser';
-$config['db']['dbpass'] = 'localpass';
+$config['db']['host'] = '';
+$config['db']['dbname'] = '';
+$config['db']['dbuser'] = '';
+$config['db']['dbpass'] = '';
+
+// this is included in front of each database table name
+$config['db']['prefix'] = '';
 
 //Local Admin Email //
 $config['admin_email'] = 'support@fuckedgox.com';

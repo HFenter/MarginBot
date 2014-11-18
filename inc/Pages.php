@@ -5,12 +5,28 @@
  */
 class Pages {
 	var $activePage;
+	var $title;
 
 	function __construct() {
 		$this->activePage = $_REQUEST['page'];
 		if($this->activePage==''){
 			$this->activePage='home';
 		}
+		switch ($this->activePage) {
+			case 'doLogin':
+				$this->title = 'Login';
+				break;
+			case 'addAct':
+				$this->title = 'Add An Account';
+				break;
+			case 'viewReturns':
+				$this->title = 'View Detailed Returns';
+				break;
+			case 'home':
+			default:
+				$this->title = 'Dashboard';
+		}
+		
 	}
 
 
@@ -231,25 +247,5 @@ class Pages {
 		  ';
 	  
 	}
-	
-	function showInstallPage(){
-	
-		echo '
-		
-		
-		<form class="form-signin" role="form" method="post" action="index.php">
-			<h2 class="form-signin-heading">Please sign in</h2>
-			<label for="inputEmail" class="sr-only">User Name or Email Address</label>
-			<input type="username" id="inputEmail" class="form-control" placeholder="User Name or Email" required="" autofocus="" name="login_email">
-			<label for="inputPassword" class="sr-only">Password</label>
-			<input type="password" id="inputPassword" class="form-control" placeholder="Password" required="" name="login_password">
-			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-		  </form>
-		  ';
-	  
-	}
-
-
-	
 }
 ?>

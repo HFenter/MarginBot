@@ -22,12 +22,12 @@ class Accounts{
 	 
 	/* check for a logged in user, update the session for them  */
 	function checkLoggedUser(){
-		global $hasher, $pages, $alert, $warning;
+		global $config, $hasher, $pages, $alert, $warning;
 		// Check if all session variables are set 
 		if (isset($_SESSION['userid'], $_SESSION['username'], $_SESSION['login_pass'])) {		 
 			// Get the user-agent string of the user.
 			$user_browser = $_SERVER['HTTP_USER_AGENT'];
-			$userLogged = $this->db->query("SELECT password FROM `BFXLendBotUsers` WHERE id = '".$this->db->escapeStr($_SESSION['userid'])."' LIMIT 1");
+			$userLogged = $this->db->query("SELECT password FROM `".$config['db']['prefix']."Users` WHERE id = '".$this->db->escapeStr($_SESSION['userid'])."' LIMIT 1");
 			if (count($userLogged) ==  1) {
 				// If the user exists get variables from result.
 				// Check that the password is correct
@@ -61,9 +61,9 @@ class Accounts{
 	
 	/* log in user  */
 	function doLoginUser(){
-		global $hasher, $pages, $alert, $warning;
+		global $config, $hasher, $pages, $alert, $warning;
 		//  Grab a user from the database using form input //
-		$userLog = $this->db->query("SELECT id, name, password FROM `BFXLendBotUsers` WHERE (email = '".$this->db->escapeStr($_REQUEST['login_email'])."'  OR name = '".$this->db->escapeStr($_REQUEST['login_email'])."' ) LIMIT 1");
+		$userLog = $this->db->query("SELECT id, name, password FROM `".$config['db']['prefix']."Users` WHERE (email = '".$this->db->escapeStr($_REQUEST['login_email'])."'  OR name = '".$this->db->escapeStr($_REQUEST['login_email'])."' ) LIMIT 1");
 		if (count($userLog) ==  1) {
 			// seems to have found a row, lets hash their password and see if they match //
 			// Check that the password is correct
@@ -100,7 +100,7 @@ class Accounts{
 	
 	
 	function doAddAccount(){
-		global $hasher, $pages, $alert, $warning, $gen;
+		global $config, $hasher, $pages, $alert, $warning, $gen;
 		// Check Everything Submitted to see if its valid //
 		if(strlen($_REQUEST['new_name']) < 3){$warning[] = 'Account Name must be at least 3 characters long';}
 		if(strlen($_REQUEST['new_bfxKey']) != 43){$warning[] = 'Bitfinex API Keys are 43 Characters Long';}
@@ -110,7 +110,7 @@ class Accounts{
 
 		if(count($warning)==0){
 			// Check it doesn't already exits...
-			$userCheck = $this->db->query("SELECT name, bfxapikey FROM `BFXLendBotUsers` WHERE (name = '".$this->db->escapeStr($_REQUEST['new_name'])."' OR bfxapikey = '".$this->db->escapeStr($_REQUEST['new_bfxKey'])."' ) LIMIT 1");
+			$userCheck = $this->db->query("SELECT name, bfxapikey FROM `".$config['db']['prefix']."Users` WHERE (name = '".$this->db->escapeStr($_REQUEST['new_name'])."' OR bfxapikey = '".$this->db->escapeStr($_REQUEST['new_bfxKey'])."' ) LIMIT 1");
 			if (count($userCheck) ==  1) {
 				if($userCheck[0]['name'] == $_REQUEST['new_name'] ){
 					$warning[] = 'This user name already exists in our database';
@@ -131,7 +131,7 @@ class Accounts{
 				// hash the password
 				$passEnc = $hasher->HashPassword($_REQUEST['new_password']);
 				// write account to db
-				$sql = "INSERT into `BFXLendBotUsers` (`name`,`email`,`password`,`bfxapikey`,`bfxapisec`,`status` )
+				$sql = "INSERT into `".$config['db']['prefix']."Users` (`name`,`email`,`password`,`bfxapikey`,`bfxapisec`,`status` )
 					 VALUES
 					 ( '".$this->db->escapeStr($_REQUEST['new_name'])."', '".$this->db->escapeStr($_REQUEST['new_email'])."', '".$this->db->escapeStr($passEnc)."',
 					 '".$this->db->escapeStr($_REQUEST['new_bfxKey'])."', '".$this->db->escapeStr($_REQUEST['new_bfxSec'])."', '".$this->db->escapeStr($_REQUEST['new_actType'])."' )";
@@ -139,9 +139,9 @@ class Accounts{
 				
 				if($newUser['id']!=0){
 					//  Set default settings for the account //
-					$sql = "INSERT into `BFXLendBotVars` (`id`,`minlendrate`,`spreadlend`,`USDgapBottom`,`USDgapTop`,`thirtyDayMin`,`highholdlimit`,`highholdamt` )
+					$sql = "INSERT into `".$config['db']['prefix']."Vars` (`id`,`minlendrate`,`spreadlend`,`USDgapBottom`,`USDgapTop`,`thirtyDayMin`,`highholdlimit`,`highholdamt` )
 						 VALUES
-						 ( '".$newUser['id']."', '0.0500', '3', '25000', '100000', '0.1500', '0', '0.3500' )";
+						 ( '".$newUser['id']."', '0.0500', '3', '25000', '100000', '0.1500', '0.3500', '0' )";
 					$newActSettings = $this->db->iquery($sql);
 					$ret['page']=2;
 					$ret['newaccount']=$newUser['id'];
@@ -159,7 +159,8 @@ class Accounts{
 	
 	/* Grab account info from database */
 	function getAccount(){
-		$sql = "SELECT * from `BFXLendBotUsers` WHERE id = '".$this->db->escapeStr($this->userid)."' LIMIT 1";
+		global $config;
+		$sql = "SELECT * from `".$config['db']['prefix']."Users` WHERE id = '".$this->db->escapeStr($this->userid)."' LIMIT 1";
 		$userInfo = $this->db->query($sql);
 		if($userInfo[0]['bfxapikey'] !='' && $userInfo[0]['bfxapisec'] !=''){
 			/* Good user, set all the variables */
@@ -178,9 +179,9 @@ class Accounts{
 		// * Get All Active BFX Accounts      * //
 		// * Create Account Objects for them  * //
 		// Only allow ADMIN accounts to do this //
-		global $accounts;
+		global $config, $accounts;
 		if($this->sts==9){
-			$userIds = $this->db->query("SELECT id from `BFXLendBotUsers` WHERE status != 0 AND id != ".$this->userid." ORDER BY id ASC");
+			$userIds = $this->db->query("SELECT id from `".$config['db']['prefix']."Users` WHERE status != 0 AND id != ".$this->userid." ORDER BY id ASC");
 			foreach($userIds as $uid){
 				$accounts[$uid['id']] = new Accounts($uid['id']);
 			}
@@ -333,7 +334,7 @@ class Accounts{
 	}
 	
 	function updateSettings(){
-		global $alert, $warning;
+		global $config, $alert, $warning;
 		
 		$minlendrate = preg_replace('/[^0-9.]/', '', $_REQUEST['minlendrate']);
 		$spreadlend = preg_replace('/[^0-9.]/', '', $_REQUEST['spreadlend']);
@@ -345,7 +346,7 @@ class Accounts{
 		
 		
 		// write defaults to db
-		$sql = "UPDATE `BFXLendBotVars` SET  minlendrate = '".$this->db->escapeStr($minlendrate)."', spreadlend = '".$this->db->escapeStr($spreadlend)."',
+		$sql = "UPDATE `".$config['db']['prefix']."Vars` SET  minlendrate = '".$this->db->escapeStr($minlendrate)."', spreadlend = '".$this->db->escapeStr($spreadlend)."',
 				USDgapBottom = '".$this->db->escapeStr($USDgapBottom)."', USDgapTop = '".$this->db->escapeStr($USDgapTop)."', 
 				thirtyDayMin = '".$this->db->escapeStr($thirtyDayMin)."', 
 				highholdlimit = '".$this->db->escapeStr($highholdlimit)."', 
@@ -370,15 +371,18 @@ class Accounts{
 	
 	/* Loan Return Details */
 	function get1DayReturns(){
-		$averageReturn = $this->db->query("SELECT swap_payment as intTotal, ((swap_payment / dep_balance)*100) as avgInt FROM BFXLendTracking where user_id = '".$this->db->escapeStr($this->userid)."' and date = DATE_SUB(CURDATE(), INTERVAL 1 DAY)");
+		global $config;
+		$averageReturn = $this->db->query("SELECT swap_payment as intTotal, ((swap_payment / dep_balance)*100) as avgInt FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($this->userid)."' and date = DATE_SUB(CURDATE(), INTERVAL 1 DAY)");
 		return $averageReturn[0];
 	}
 	function get30DayReturns(){
-		$averageReturn = $this->db->query("SELECT SUM(swap_payment) as intTotal, (SUM(swap_payment) / SUM(dep_balance))*100 as avgInt FROM BFXLendTracking where user_id = '".$this->db->escapeStr($this->userid)."' and date BETWEEN DATE_SUB(NOW(), INTERVAL 31 DAY) AND DATE_SUB(NOW(), INTERVAL 1 DAY)");
+		global $config;
+		$averageReturn = $this->db->query("SELECT SUM(swap_payment) as intTotal, (SUM(swap_payment) / SUM(dep_balance))*100 as avgInt FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($this->userid)."' and date BETWEEN DATE_SUB(NOW(), INTERVAL 31 DAY) AND DATE_SUB(NOW(), INTERVAL 1 DAY)");
 		return $averageReturn[0];
 	}
 	function getFullReturns(){
-		$averageReturn = $this->db->query("SELECT SUM(swap_payment) as intTotal, (SUM(swap_payment) / SUM(dep_balance))*100 as avgInt FROM BFXLendTracking where user_id = '".$this->db->escapeStr($this->userid)."'");
+		global $config;
+		$averageReturn = $this->db->query("SELECT SUM(swap_payment) as intTotal, (SUM(swap_payment) / SUM(dep_balance))*100 as avgInt FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($this->userid)."'");
 		return $averageReturn[0];
 	}
 	

@@ -1,10 +1,9 @@
 <?
-$headers['title'] = "Dashboard";
 require_once('inc/header.php');
-
 
 $gen->showWarnings($warning);
 $gen->showAlerts($alert);
+$gen->showNotice($notice);
 
 
 

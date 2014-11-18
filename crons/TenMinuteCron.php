@@ -22,7 +22,7 @@ require_once('../inc/ExchangeAPIs/bitfinex.php');
 // * Get All Active BFX Accounts     * //
 // * Create Account Objects for them * //
 
-$userIds = $db->query("SELECT id from `BFXLendBotUsers` WHERE status >= '1' ORDER BY id ASC");
+$userIds = $db->query("SELECT id from `".$config['db']['prefix']."Users` WHERE status >= '1' ORDER BY id ASC");
 foreach($userIds as $uid){
 	$accounts[$uid['id']] = new $act($uid['id']);
 	
