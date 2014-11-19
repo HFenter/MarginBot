@@ -1,4 +1,4 @@
-This is a PHP based Margin Lending Managment Bot for the Bitfinex [API](https://bitfinex.com/pages/api).
+This is a PHP based Margin Lending Management Bot for the Bitfinex [API](https://bitfinex.com/pages/api).
 
 ## Details
 This bot is designed to manage 1 or more bitfinex accounts, doing its best to keep any money in the "depost" wallet lent out at the highest rate possible while avoiding long periods of pending loans (as often happens when using the Flash Return Rate, or some other arbitrary rate).  There are numerous options and setting to tailor the bot to your requirements.
