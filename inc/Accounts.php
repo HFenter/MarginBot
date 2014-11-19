@@ -54,6 +54,7 @@ class Accounts{
 			unset($_SESSION['userid']);
 			unset($_SESSION['username']);
 			unset($_SESSION['login_pass']);
+			unset($_SESSION['user_lvl']);
 			$warning[] = "Your Session Has Expired, Please Log In Again";
 			return false;
 		}
@@ -63,7 +64,7 @@ class Accounts{
 	function doLoginUser(){
 		global $config, $hasher, $pages, $alert, $warning;
 		//  Grab a user from the database using form input //
-		$userLog = $this->db->query("SELECT id, name, password FROM `".$config['db']['prefix']."Users` WHERE (email = '".$this->db->escapeStr($_REQUEST['login_email'])."'  OR name = '".$this->db->escapeStr($_REQUEST['login_email'])."' ) LIMIT 1");
+		$userLog = $this->db->query("SELECT id, name, password, status FROM `".$config['db']['prefix']."Users` WHERE (email = '".$this->db->escapeStr($_REQUEST['login_email'])."'  OR name = '".$this->db->escapeStr($_REQUEST['login_email'])."' ) LIMIT 1");
 		if (count($userLog) ==  1) {
 			// seems to have found a row, lets hash their password and see if they match //
 			// Check that the password is correct
@@ -74,6 +75,7 @@ class Accounts{
 				$_SESSION['userid']=$userLog[0]['id'];
 				$_SESSION['username']=$userLog[0]['name'];
 				$_SESSION['login_pass']=$_REQUEST['login_password'];
+				$_SESSION['user_lvl']=$userLog[0]['status'];
 				// update account object with user info //
 				$this->userid = $userLog[0]['id'];
 				$this->getAccount();
@@ -94,6 +96,7 @@ class Accounts{
 		unset($_SESSION['userid']);
 		unset($_SESSION['username']);
 		unset($_SESSION['login_pass']);
+		unset($_SESSION['user_lvl']);
 		$alert[] = "Your Session Has Been Logged Out, Please Log Back In To Continue";
 		$pages->activePage = 'doLogin';
 	}
@@ -384,6 +387,15 @@ class Accounts{
 		global $config;
 		$averageReturn = $this->db->query("SELECT SUM(swap_payment) as intTotal, (SUM(swap_payment) / SUM(dep_balance))*100 as avgInt FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($this->userid)."'");
 		return $averageReturn[0];
+	}
+	
+	function getStatsArray( $uid = 0){
+		global $config;
+		if($uid == 0){
+			$uid = $this->userid;
+		}
+		$averageReturn = $this->db->query("SELECT date, swap_payment, average_return, dep_balance FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($uid)."'");
+		return $averageReturn;		
 	}
 	
 }

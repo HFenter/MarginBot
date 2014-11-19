@@ -90,6 +90,9 @@ else{
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/jquery.formatCurrency-1.4.0.min.js"></script>
+    <!-- Highcharts, for the stats page -->
+    <script src="http://code.highcharts.com/stock/highstock.js"></script>
+	<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
 	
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">

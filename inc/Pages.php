@@ -227,7 +227,48 @@ class Pages {
 	function showViewReturns(){
 		global $accounts;
 		
-		echo "<h1>Coming Soon</h1>";
+		if($_SESSION['user_lvl']==9){
+			// global stats for all accounts //
+			echo "
+				<script type='text/javascript' src='js/global_chart.js'></script>
+				<div class='bigChart'>					
+					<div id='chart_GlobalDailyReturns' class='chartArea'><img src='img/ajax-loader.gif' class='loader'></div>
+				</div>
+				";
+			foreach($accounts as $a){
+				$userIds[] = $a->userid;
+				$userNames[] = $a->name;
+				echo "
+				<div class='bigChart'>
+					<div id='chart_UserDailyReturns_".$a->userid."' class='chartArea'><img src='img/ajax-loader.gif' class='loader'></div>
+				</div>
+					";
+                }
+				echo "
+				<script>
+					var userIds = [".implode(",", $userIds)."];
+					var userNames = ['".implode("','", $userNames)."'];
+				</script>
+				<script type='text/javascript' src='js/user_chart.js'></script>
+				
+				";
+
+		
+		}
+		// Individual Stats //
+		else{
+			echo "
+				<div class='bigChart'>
+					<div id='chart_UserDailyReturns_".$_SESSION['userid']."' class='chartArea'><img src='img/ajax-loader.gif' class='loader'></div>
+				</div>
+                <script>
+					var userIds = [".$_SESSION['userid']."];
+					var userNames = ['".$_SESSION['username']."'];
+				</script>
+				<script type='text/javascript' src='js/user_chart.js'></script>
+				
+				";
+		}
 	}
 
 

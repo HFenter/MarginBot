@@ -1,7 +1,7 @@
 /* Space out content a bit */
 body {
   padding-top: 70px;
-  padding-bottom: 20px;
+  padding-bottom: 70px;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -49,6 +49,23 @@ body {
 	padding: 15px;
 	margin: 0 auto;
 	}
+
+.bigChart{
+	height:506px;
+	min-width:450px;
+	text-align:center;
+	padding: 2px;
+	margin:2px;
+	border: 1px solid #333;
+}
+.bigChart .chartArea{
+	height:500px;
+	min-width:450px;
+	text-align:center;
+}
+.bigChart .loader{
+	margin: 150px auto;
+}
 
 /* Customize container */
 @media (min-width: 1280px) {
