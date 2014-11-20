@@ -32,9 +32,44 @@ $(function () {
 	
 	
 		$('#chart_GlobalDailyReturns').highcharts('StockChart',{
-
-            rangeSelector: {
-                selected: 1
+			chart: {
+				// Edit chart spacing
+				spacingLeft: 40,
+				spacingRight: 50
+			},
+			rangeSelector: {
+                selected: 1,
+				buttons: [{
+					type: 'day',
+					count: 7,
+					text: '7d'
+				}, {
+					type: 'day',
+					count: 15,
+					text: '15d'
+				}, {
+					type: 'month',
+					count: 1,
+					text: '1m'
+				}, {
+					type: 'month',
+					count: 3,
+					text: '3m'
+				}, {
+					type: 'month',
+					count: 6,
+					text: '6m'
+				}, {
+					type: 'ytd',
+					text: 'YTD'
+				}, {
+					type: 'year',
+					count: 1,
+					text: '1y'
+				}, {
+					type: 'all',
+					text: 'All'
+				}]
             },
 			title: {
 				text: 'Global Daily Margin Returns'
@@ -42,6 +77,8 @@ $(function () {
 			yAxis: [{ // Primary yAxis
 				title: {
 					text: 'Daily Return $USD',
+					x: -22,
+    				y: 0,
 					style: {
 						color: Highcharts.getOptions().colors[0]
 					}
@@ -49,26 +86,34 @@ $(function () {
 				labels: {
 					format: '${value}',
 					align:'left',
+					x: -25,
+    				y: 0,
 					style: {
 						color: Highcharts.getOptions().colors[0]
 					}
 				},
-				opposite:false
+				opposite:false,
+				floor: 0
 			}, { // Secondary yAxis
 				title: {
 					text: 'Daily Return %',
+					x: 30,
+    				y: 0,
 					style: {
 						color: Highcharts.getOptions().colors[1]
 					}
 				},
 				labels: {
-					format: '{value}% / Day',
+					format: '{value}%',
 					align:'right',
+					x: 30,
+    				y: 0,
 					style: {
 						color: Highcharts.getOptions().colors[1]
 					}
 				},
-				opposite: true
+				opposite: true,
+				floor: 0
 			}],
 			tooltip: {
 				shared: true
