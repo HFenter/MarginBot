@@ -381,10 +381,10 @@ class General {
       	<p>You can send donations to:</p>
         <div class="media" style="border-bottom:1px solid #e5e5e5;padding-bottom:20px;" >
           <a class="media-left">
-            <img src="img/bitcoin_donate.png" alt="Dontate Bitcoin: 1LtVC2TE88b9zJcf6NFk4fzupM74QGUXQB">
+            <img src="img/bitcoin_donate.png" alt="Dontate Bitcoin: 1A3y1xDXtyZySmPZySbpz7PPog4Vsyqig1">
           </a>
           <div class="media-body" style="vertical-align: middle;">
-            <h4 class="media-heading">Bitcoin: 1LtVC2TE88b9zJcf6NFk4fzupM74QGUXQB</h4>
+            <h4 class="media-heading">Bitcoin: 1A3y1xDXtyZySmPZySbpz7PPog4Vsyqig1</h4>
           </div>
         </div>
         <div class="media" style="padding-top:20px;">

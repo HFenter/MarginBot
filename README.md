@@ -18,3 +18,10 @@ A live webserver running
 If you don't have a bitfinex account, please consider using my [affiliate code](https://www.bitfinex.com/?refcode=vsAnxuo5bM) when signing up.  By doing so, you'll save 10% on all fees for the first month, and it will help support further development of this code.
 
 [https://www.bitfinex.com/?refcode=vsAnxuo5bM](https://www.bitfinex.com/?refcode=vsAnxuo5bM).
+
+## Donations
+Developing this software, and testing the various strategies for lending that led to its development have taken significant time and effort.  If you find this software useful, please send a small donation our way.  All donations support the continued development of this software, and help to cover my distribution and support costs.
+
+You can send donations to:
+
+Bitcoin: 1A3y1xDXtyZySmPZySbpz7PPog4Vsyqig1
