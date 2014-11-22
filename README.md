@@ -15,14 +15,14 @@ To update, **make a backup of your inc/config.php file**, then [download the mos
 
 In your inc/config.php file, update the following lines, copying over from your previous backup:
 
-$config['db']['host'] = '';
-$config['db']['dbname'] = '';
-$config['db']['dbuser'] = '';
-$config['db']['dbpass'] = '';
-
-$config['db']['prefix'] = '';
-
-$config['admin_email'] = 'support@fuckedgox.com';
+	$config['db']['host'] = '';
+	$config['db']['dbname'] = '';
+	$config['db']['dbuser'] = '';
+	$config['db']['dbpass'] = '';
+	
+	$config['db']['prefix'] = '';
+	
+	$config['admin_email'] = 'support@fuckedgox.com';
 
 (In future versions, backing up the config file then overwriting it during an update should be easier, but I didn't plan correctly in the first version... oops)
 
