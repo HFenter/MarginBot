@@ -144,7 +144,7 @@ class Accounts{
 					//  Set default settings for the account //
 					$sql = "INSERT into `".$config['db']['prefix']."Vars` (`id`,`minlendrate`,`spreadlend`,`USDgapBottom`,`USDgapTop`,`thirtyDayMin`,`highholdlimit`,`highholdamt` )
 						 VALUES
-						 ( '".$newUser['id']."', '0.0500', '3', '25000', '100000', '0.1500', '0.3500', '0' )";
+						 ( '".$newUser['id']."', '0.0650', '3', '25000', '100000', '0.1500', '0.3500', '0' )";
 					$newActSettings = $this->db->iquery($sql);
 					$ret['page']=2;
 					$ret['newaccount']=$newUser['id'];

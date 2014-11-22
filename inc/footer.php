@@ -5,7 +5,7 @@
       <div class="container">
       	<div class="row">
             <div class="text-muted col-md-4" style="text-align:center;">
-                <?=$config['app_name'].' '.$config['app_version'];?><br />
+                <?=$config['app_name'].' '.$config['app_version'].'.<small>'.$config['app_version_minor'].'</small>';?><br />
                     <a href="#" data-toggle="modal" data-target="#disclaimerModal">Disclaimer</a>
             </div>
             <div class="text-muted col-md-4" style="text-align:center;">

@@ -2,11 +2,7 @@
 date_default_timezone_set('America/Los_Angeles');
 setlocale(LC_MONETARY, 'en_US');
 session_start();
-// site Name
-$config['app_name'] = 'MarginBot';
-$config['app_version'] = '0.1';
-$config['app_support_url'] = 'http://fuckedgox.com/MBot/';
-$config['app_support_email'] = 'marginbot@fuckedgox.com';
+require_once('./version_info.php');
 
 // Local Database Connection Info //
 $config['db']['host'] = '';

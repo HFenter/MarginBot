@@ -85,7 +85,7 @@ else{
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title><?=($pages->title ? $config['app_name'].' '.$config['app_version'].' - '.$pages->title : $config['app_name'].' '.$config['app_version']);?></title>
+	<title><?=($pages->title ? $config['app_name'].' '.$config['app_version'].'.'.$config['app_version_minor'].' - '.$pages->title : $config['app_name'].' '.$config['app_version'].'.'.$config['app_version_minor']);?></title>
 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
@@ -122,7 +122,7 @@ else{
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="index.php"><?=$config['app_name'].' '.$config['app_version'];?></a>
+          <a class="navbar-brand" href="index.php" title="Version <?=$config['app_version'].'.'.$config['app_version_minor'];?>"><?=$config['app_name'].' '.$config['app_version'];?></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
  

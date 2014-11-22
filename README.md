@@ -7,6 +7,26 @@ This bot is designed to manage 1 or more bitfinex accounts, doing its best to ke
 
 [Download the most current version](https://github.com/HFenter/MarginBot/archive/master.zip), unzip to a folder on your server, then browse to that folder.  An install script will run you through the rest of the process.
 
+### Update from an older Version
+
+**Important**  - Make sure to backup your existing inc/config.php file **FIRST**
+
+To update, **make a backup of your inc/config.php file**, then [download the most current version](https://github.com/HFenter/MarginBot/archive/master.zip).  Unzip the files and overwrite your existing install.  
+
+In your inc/config.php file, update the following lines, copying over from your previous backup:
+
+$config['db']['host'] = '';
+$config['db']['dbname'] = '';
+$config['db']['dbuser'] = '';
+$config['db']['dbpass'] = '';
+
+$config['db']['prefix'] = '';
+
+$config['admin_email'] = 'support@fuckedgox.com';
+
+(In future versions, backing up the config file then overwriting it during an update should be easier, but I didn't plan correctly in the first version... oops)
+
+
 ## Requirements
 
 A live webserver running

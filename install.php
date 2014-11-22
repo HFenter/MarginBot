@@ -74,11 +74,7 @@ $configData = '<?php
 date_default_timezone_set(\'America/Los_Angeles\');
 setlocale(LC_MONETARY, \'en_US\');
 session_start();
-// site Name
-$config[\'app_name\'] = \'MarginBot\';
-$config[\'app_version\'] = \'0.1\';
-$config[\'app_support_url\'] = \'http://fuckedgox.com/MBot/\';
-$config[\'app_support_email\'] = \'marginbot@fuckedgox.com\';
+require_once(\'version_info.php\');
 
 // Local Database Connection Info //
 $config[\'db\'][\'host\'] = \''.$_REQUEST['installDBHost'].'\';
@@ -184,7 +180,7 @@ else if($_REQUEST['doInstall']==2){
 				//  Set default settings for the account //
 				$sql = "INSERT into `".$config['db']['prefix']."Vars` (`id`,`minlendrate`,`spreadlend`,`USDgapBottom`,`USDgapTop`,`thirtyDayMin`,`highholdlimit`,`highholdamt` )
 					 VALUES
-					 ( '".$newUser['id']."', '0.0500', '3', '25000', '100000', '0.1500', '0.3500', '0' )";
+					 ( '".$newUser['id']."', '0.0650', '3', '25000', '100000', '0.1500', '0.3500', '0' )";
 				$newActSettings = $db->iquery($sql);
 				
 				// Success, tell them they need to login now //
@@ -211,7 +207,7 @@ echo '
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>'.$config['app_name'].' '.$config['app_version'].' - Install</title>
+	<title>'.$config['app_name'].' '.$config['app_version'].'.'.$config['app_version_minor'].' - Install</title>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/jquery.formatCurrency-1.4.0.min.js"></script>
@@ -284,7 +280,7 @@ if($_REQUEST['doInstall']<=1){
 	echo '
 	
 		<div class="panel panel-default">
-				<div class="panel-heading">Lets Install '.$config['app_name'].' '.$config['app_version'].'</div>
+				<div class="panel-heading">Lets Install '.$config['app_name'].' '.$config['app_version'].'.'.$config['app_version_minor'].'</div>
 				<div class="panel-body table-responsive">
 					It looks like you haven\'t run through the '.$config['app_name'].' '.$config['app_version'].' Installer yet.  Lets do so now!
 				</div>

@@ -26,8 +26,6 @@ if($_REQUEST['global']==1 && $_SESSION['user_lvl']==9){
 	$accounts[$_SESSION['userid']] = $act;
 	// grab all the other accounts as well, load them into an array //
 	$act->getAllAccounts();
-	
-	echo '<pre>';	
 	foreach($accounts as $a){
 		/* Get a Full Array of Stats */	
 		$dataArray[$a->userid] = $a->getStatsArray();

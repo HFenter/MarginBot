@@ -413,7 +413,7 @@ class General {
             <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
         </div>
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="disclaimerModalLabel">'.$config['app_name'].' '.$config['app_version'].' and Terms of Use</h4>
+        <h4 class="modal-title" id="disclaimerModalLabel">'.$config['app_name'].' '.$config['app_version'].'.'.$config['app_version_minor'].' and Terms of Use</h4>
       </div>
       <div class="modal-body">
       	<p>Alright, we could put a big huge block of text here written by dozens of lawyers requiring you to sign away your first born child and all your Dogecoin (are those still a thing?), but I\'d rather keep this simple and straightforward.  So, heres the deal:</p>
