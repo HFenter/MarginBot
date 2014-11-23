@@ -307,6 +307,42 @@ class General {
 	}
 	
 	
+	function checkCronStatus(){
+		global $config, $alert, $warning;
+		$cronURL = 'http://'.$_SERVER["HTTP_HOST"].dirname($_SERVER['PHP_SELF']).'/crons/';
+		$cronSql1 = $this->db->query("select lastrun from `".$config['db']['prefix']."CronRuns` where cron_id = 1 ORDER BY lastrun desc LIMIT 1");
+		if (count($cronSql1) ==  1) {
+			$age1 = floor((time()-strtotime($cronSql1[0]['lastrun'])));
+			if($age1 > 7200){
+				// more than 120 minutes has passed, the cron must not be running //
+				$warning[] = '<strong>It appears the hourly cron hasn\'t been running</strong>.  The last time it ran was <em>'.date('g:i:s a, F jS, Y', strtotime($cronSql1[0]['lastrun'])).'</em>.  Check to make sure your cronjob contains a job similar to:
+						<br>5 * * * * wget -qO- '.$cronURL.'HourlyCron.php >/dev/null 2>&1';
+			}
+		}
+		else{
+			// no record of  the cron running //
+			$warning[] = '<strong>It appears you have not set up the hourly cron, or it hasn\'t been running</strong>.  Check to make sure your cronjob contains a job similar to:
+					<br>5 * * * * wget -qO- '.$cronURL.'HourlyCron.php >/dev/null 2>&1';
+		}
+		$cronSql2 = $this->db->query("select lastrun from `".$config['db']['prefix']."CronRuns` where cron_id = 2 ORDER BY lastrun desc LIMIT 1");
+		if (count($cronSql2) ==  1) {
+			$age2 = floor((time()-strtotime($cronSql2[0]['lastrun'])));
+			if($age2 > 1200){
+				// more than 20 minutes has passed, the cron must not be running //
+				$warning[] = '<strong>It appears the 10 minute cron hasn\'t been running</strong>. The last time it ran was <em>'.date('g:i:s a, F jS, Y', strtotime($cronSql2[0]['lastrun'])).'</em>.Check to make sure your cronjob contains a job similar to:<br>01,11,21,31,41,51 * * * * wget -qO- '.$cronURL.'TenMinuteCron.php >/dev/null 2>&1';
+			}
+		}
+		else{
+			// no record of  the cron running //
+			$warning[] = '<strong>It appears you have not set up the 10 minute cron, or it hasn\'t been running</strong>. Check to make sure your cronjob contains a job similar to:<br>01,11,21,31,41,51 * * * * wget -qO- '.$cronURL.'TenMinuteCron.php >/dev/null 2>&1';
+		}
+		
+		
+	}
+		
+	
+	
+	
 	function showWarnings($warning){
 		foreach($warning as $w){
 			echo '

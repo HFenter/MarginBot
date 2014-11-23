@@ -77,7 +77,7 @@ else{
 }
 
 
-
+$gen->checkCronStatus();
 
 
 ?>

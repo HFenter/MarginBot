@@ -6,3 +6,7 @@
     * Fixed the stats always loading when there is no data
 	* Changed Default "Minimum Lend Rate" to 0.0650%
 	* Moved version info from inc/config.php to inc/version_info.php
+	
+### v0.1.03
+	* Added a cron tracking database, to make sure crons are running and keep a history
+	* Added a nag warning if the system detects your crons haven't run in a while

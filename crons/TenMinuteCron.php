@@ -22,15 +22,25 @@ require_once('../inc/ExchangeAPIs/bitfinex.php');
 // * Get All Active BFX Accounts     * //
 // * Create Account Objects for them * //
 
+// check that the crons database exists //
+$cronsTableSQL = '
+	CREATE TABLE IF NOT EXISTS `'.$config['db']['prefix'].'CronRuns` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `cron_id` tinyint(1) NOT NULL,
+	  `lastrun` datetime NOT NULL,
+	  `details` varchar(256) NOT NULL,
+	  PRIMARY KEY (`id`)
+	)';
+$rt = $db->iquery($cronsTableSQL);
+
+
 $userIds = $db->query("SELECT id from `".$config['db']['prefix']."Users` WHERE status >= '1' ORDER BY id ASC");
 foreach($userIds as $uid){
 	$accounts[$uid['id']] = new $act($uid['id']);
-	
-	
 	/* Run the bot to update all pending loans according to account settings */	
 	$accounts[$uid['id']]->bfx->bitfinex_updateMyLends();
-	
-	//print_r($accounts[$uid['id']]);
+	// mark it in the crons table so we know its working
+	$cronUpdates = $db->iquery("INSERT into `".$config['db']['prefix']."CronRuns` (`cron_id`, `lastrun`, `details`) VALUES ('2', NOW(), 'Updated User ".$uid['id']." Current Loans')");	
 }
 
 
