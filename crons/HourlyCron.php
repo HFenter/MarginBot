@@ -42,7 +42,6 @@ foreach($userIds as $uid){
 	/* Update their account history */	
 	$accounts[$uid['id']]->bfx->bitfinex_updateHistory();
 	// mark it in the crons table so we know its working
-	echo "INSERT into `".$config['db']['prefix']."CronRuns` (`cron_id`, `lastrun`, `details`) VALUES ('1', NOW(), 'Updated User ".$uid['id']." History')";
 	$cronUpdates = $db->iquery("INSERT into `".$config['db']['prefix']."CronRuns` (`cron_id`, `lastrun`, `details`) VALUES ('1', NOW(), 'Updated User ".$uid['id']." History')");	
 }
 
