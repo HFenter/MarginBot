@@ -13,6 +13,7 @@ $(function () {
 				var dataLength = data.length,
 					amtReturn = [],
 					intReturn = [],
+					balReturn = [],
 					// set the allowed units for data grouping
 					groupingUnits = [[
 						'week',                         // unit name
@@ -35,6 +36,10 @@ $(function () {
 					intReturn.push([
 						s, // the date
 						data[i][2] // the percent
+					]);
+					balReturn.push([
+						s, // the date
+						data[i][3] // the balance
 					]);
 				}
 			
@@ -84,78 +89,134 @@ $(function () {
 						text: 'Daily Margin Returns for '+thisName
 					},
 					yAxis: [{ // Primary yAxis
-						title: {
-							text: 'Daily Return $USD',
-							x: -22,
-							y: 0,
-							style: {
-								color: Highcharts.getOptions().colors[0]
-							}
-						},
-						labels: {
-							format: '${value}',
-							align:'left',
-							x: -25,
-							y: 0,
-							style: {
-								color: Highcharts.getOptions().colors[0]
-							}
-						},
-						opposite:false,
-						floor: 0
-					}, { // Secondary yAxis
-						title: {
-							text: 'Daily Return %',
-							x: 30,
-							y: 0,
-							style: {
-								color: Highcharts.getOptions().colors[1]
-							}
-						},
-						labels: {
-							format: '{value}%',
-							align:'right',
-							x: 30,
-							y: 0,
-							style: {
-								color: Highcharts.getOptions().colors[1]
-							}
-						},
-						opposite: true,
-						floor: 0
-					}],
-					tooltip: {
-						shared: true
+					title: {
+						text: 'Daily Return $USD',
+						x: -22,
+						y: 0,
+						style: {
+							color: '#960000'
+						}
 					},
-					series: [{
-						type: 'column',
-						name: '$USD Return',
-						data: amtReturn,
-						tooltip: {
-							valueDecimals: 2
-						},
-						dataGrouping:{
-									enabled:true,
-									groupPixelWidth:2,
-									units:groupingUnits
-								}
-						
+					labels: {
+						format: '${value}',
+						align:'left',
+						x: -25,
+						y: 0,
+						style: {
+							color: '#960000'
+						}
 					},
+					opposite:false,
+					floor: 0
+				}, { // Secondary yAxis
+					title: {
+						text: 'Daily Return %',
+						x: 30,
+						y: 0,
+						style: {
+							color: '#052487'
+						}
+					},
+					labels: {
+						format: '{value}%',
+						align:'right',
+						x: 31,
+						y: -1,
+						style: {
+							color: '#052487'
+						}
+					},
+					opposite: true,
+					floor: 0
+				
+				}, { // Terciary yAxis
+					title: {
+						text: 'Balance',
+						x: 20,
+						y: 0,
+						style: {
+							color: '#009600'
+						}
+					},
+					labels: {
+						format: '${value}',
+						align:'right',
+						x: 5,
+						y: 11,
+						style: {
+							color: '#009600'
+						}
+					},
+					opposite: true,
+					floor: 0
+				}],
+				tooltip: {
+					shared: true
+				},
+				series: [
 					{
-						type: 'line',
-						name: 'Average Margin %',
-						data: intReturn,
-						yAxis:1,
-						tooltip: {
-							valueDecimals: 4
+					type: 'areaspline',
+					name: '$USD Balance',
+					data: balReturn,
+					yAxis:2,
+					tooltip: {
+						valueDecimals: 2
+					},
+					dataGrouping:{
+								enabled:true,
+								groupPixelWidth:2,
+								units:groupingUnits
+							},
+					color: '#009600',
+					fillColor : {
+						linearGradient : {
+							x1: 0,
+							y1: 0,
+							x2: 0,
+							y2: 1
 						},
-						dataGrouping:{
-									enabled:true,
-									groupPixelWidth:2,
-									units:groupingUnits
-								}
-					}]
-				});
+						stops : [
+							[0, '#cbe9cb'],
+							[1, '#ecfeec']
+						]
+					}
+				},{
+					type: 'column',
+					name: '$USD Return',
+					data: amtReturn,
+					tooltip: {
+						valueDecimals: 2
+					},
+					color: {
+						linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
+						stops: [
+							[0, '#ca7f7f'],
+							[1, '#e9cbcb']
+						]
+					},
+					dataGrouping:{
+								enabled:true,
+								groupPixelWidth:2,
+								units:groupingUnits
+							}
+					
+				},
+				{
+					type: 'spline',
+					name: 'Average Margin %',
+					data: intReturn,
+					yAxis:1,
+					tooltip: {
+						valueDecimals: 4
+					},
+					color: '#052487',
+					dataGrouping:{
+								enabled:true,
+								groupPixelWidth:2,
+								units:groupingUnits
+							}
+				}]
+			});
 			};
 		});
 	});

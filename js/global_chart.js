@@ -9,6 +9,7 @@ $(function () {
 			var dataLength = data.length,
 				amtReturn = [],
 				intReturn = [],
+				balReturn = [],
 				// set the allowed units for data grouping
 				groupingUnits = [[
 					'week',                         // unit name
@@ -31,6 +32,10 @@ $(function () {
 				intReturn.push([
 					s, // the date
 					data[i][2] // the percent
+				]);
+				balReturn.push([
+					s, // the date
+					data[i][3] // the balance
 				]);
 			}
 		
@@ -84,7 +89,7 @@ $(function () {
 						x: -22,
 						y: 0,
 						style: {
-							color: Highcharts.getOptions().colors[0]
+							color: '#960000'
 						}
 					},
 					labels: {
@@ -93,7 +98,7 @@ $(function () {
 						x: -25,
 						y: 0,
 						style: {
-							color: Highcharts.getOptions().colors[0]
+							color: '#960000'
 						}
 					},
 					opposite:false,
@@ -104,16 +109,37 @@ $(function () {
 						x: 30,
 						y: 0,
 						style: {
-							color: Highcharts.getOptions().colors[1]
+							color: '#052487'
 						}
 					},
 					labels: {
 						format: '{value}%',
 						align:'right',
-						x: 30,
+						x: 31,
+						y: -1,
+						style: {
+							color: '#052487'
+						}
+					},
+					opposite: true,
+					floor: 0
+				
+				}, { // Terciary yAxis
+					title: {
+						text: 'Balance',
+						x: 20,
 						y: 0,
 						style: {
-							color: Highcharts.getOptions().colors[1]
+							color: '#009600'
+						}
+					},
+					labels: {
+						format: '${value}',
+						align:'right',
+						x: 5,
+						y: 11,
+						style: {
+							color: '#009600'
 						}
 					},
 					opposite: true,
@@ -122,12 +148,46 @@ $(function () {
 				tooltip: {
 					shared: true
 				},
-				series: [{
+				series: [
+					{
+					type: 'areaspline',
+					name: '$USD Balance',
+					data: balReturn,
+					yAxis:2,
+					tooltip: {
+						valueDecimals: 2
+					},
+					dataGrouping:{
+								enabled:true,
+								groupPixelWidth:2,
+								units:groupingUnits
+							},
+					color: '#009600',
+					fillColor : {
+						linearGradient : {
+							x1: 0,
+							y1: 0,
+							x2: 0,
+							y2: 1
+						},
+						stops : [
+							[0, '#cbe9cb'],
+							[1, '#ecfeec']
+						]
+					}
+				},{
 					type: 'column',
 					name: '$USD Return',
 					data: amtReturn,
 					tooltip: {
 						valueDecimals: 2
+					},
+					color: {
+						linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
+						stops: [
+							[0, '#ca7f7f'],
+							[1, '#e9cbcb']
+						]
 					},
 					dataGrouping:{
 								enabled:true,
@@ -137,13 +197,14 @@ $(function () {
 					
 				},
 				{
-					type: 'line',
+					type: 'spline',
 					name: 'Average Margin %',
 					data: intReturn,
 					yAxis:1,
 					tooltip: {
 						valueDecimals: 4
 					},
+					color: '#052487',
 					dataGrouping:{
 								enabled:true,
 								groupPixelWidth:2,

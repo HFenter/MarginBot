@@ -40,7 +40,7 @@ if($_REQUEST['global']==1 && $_SESSION['user_lvl']==9){
 		}
 	}
 	foreach($cleanerVals as $key=>$val){
-		$cleanArray[] = [ (string)$key , (float)($val['swap_payment']), (float)$val['average_return']];
+		$cleanArray[] = [ (string)$key , (float)($val['swap_payment']), (float)$val['average_return'], (float)$val['dep_balance']];
 	}
 	echo json_encode($cleanArray);
 }
@@ -53,7 +53,7 @@ else if($_REQUEST['userid']!=0 && $_SESSION['user_lvl']==9){
 	
 	foreach($thisArray as $ta){
 		$tm = (string)(strtotime($ta['date'])).'000';
-		$cleanArray[] = [ (string)$tm , (float)($ta['swap_payment']), (float)$ta['average_return']];
+		$cleanArray[] = [ (string)$tm , (float)($ta['swap_payment']), (float)$ta['average_return'], (float)$ta['dep_balance'] ];
 	}
 	echo json_encode($cleanArray);
 }
@@ -65,7 +65,7 @@ else if($_SESSION['userid']){
 	
 	foreach($thisArray as $ta){
 		$tm = (string)(strtotime($ta['date'])).'000';
-		$cleanArray[] = [ (string)$tm , (float)($ta['swap_payment']), (float)$ta['average_return']];
+		$cleanArray[] = [ (string)$tm , (float)($ta['swap_payment']), (float)$ta['average_return'], (float)$ta['dep_balance'] ];
 	}
 	echo json_encode($cleanArray);
 }
