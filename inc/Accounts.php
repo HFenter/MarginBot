@@ -10,7 +10,7 @@ class Accounts{
 	var $bfx;
 	var $loginError;
 	
-	public function __construct($userid) {
+	public function __construct($userid='') {
     	global $config, $db;
 		$this->db = $db;
 		if($userid!=''){

@@ -43,8 +43,8 @@ class Database{
 			  exit();
 		  }
 		}
-        $return[num] = $this->database_link->affected_rows;
-        $return[id] = $this->database_link->insert_id;
+        $return['num'] = $this->database_link->affected_rows;
+        $return['id'] = $this->database_link->insert_id;
         return $return;
     }
     // select
