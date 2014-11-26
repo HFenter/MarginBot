@@ -2,7 +2,7 @@
 date_default_timezone_set('America/Los_Angeles');
 setlocale(LC_MONETARY, 'en_US');
 session_start();
-require_once('./version_info.php');
+require_once('version_info.php');
 
 // Local Database Connection Info //
 $config['db']['host'] = '';

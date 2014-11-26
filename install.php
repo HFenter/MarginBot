@@ -66,6 +66,18 @@ if($_REQUEST['doInstall']==1){
 			if ( !$mysqli->query($varsSQL) ){
 				 $warning[] = "Table creation failed: (" . $mysqli->errno . ") " . $mysqli->error;
 				}
+				
+			$cronsTableSQL = '
+				CREATE TABLE  `'.$tablePre.'CronRuns` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `cron_id` tinyint(1) NOT NULL,
+				  `lastrun` datetime NOT NULL,
+				  `details` varchar(256) NOT NULL,
+				  PRIMARY KEY (`id`)
+				) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
+			if ( !$mysqli->query($cronsTableSQL) ){
+				 $warning[] = "Table creation failed: (" . $mysqli->errno . ") " . $mysqli->error;
+				}
 			
 			if(count($warning)==0){
 				// tables seemed to create ok, lets write the config file //
@@ -292,6 +304,7 @@ if($_REQUEST['doInstall']<=1){
 		<div class="panel panel-default">
 				<div class="panel-heading">Step 1 - Local Server Settings</div>
 				<div class="panel-body table-responsive">
+
 					<table class="table table-striped table-bordered">
 						<thead>
 						<tr>

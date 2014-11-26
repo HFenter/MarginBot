@@ -3,8 +3,16 @@
 require_once("config.php");
 if($config['db']['host'] == ''){
 	// not configured, we probably need to install //
-	header('Location: install.php');
-	exit;
+	if (!headers_sent()){
+		header('Location: install.php');
+		exit;
+	}
+	// Header already sent.  Script redir them.
+	else{
+		echo '<script>window.location = "install.php";</script>';
+		exit;
+	}
+	
 }
 
 
