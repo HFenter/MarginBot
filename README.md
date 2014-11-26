@@ -34,6 +34,7 @@ A live webserver running
 * MySQL
 * Access to add a cronjob
 * A Bitfinex Account with API Access [(Set Up Here)](https://www.bitfinex.com/account/api)
+* At least $50 in your Bitfinex "Deposit" wallet.  Preferably $100 or more. ( *Note: This is a bitfinex requirement, not a bot requirement.  Bitfinex doesn't allow Margin Loans of less than $50.* ) 
 
 If you don't have a bitfinex account, please consider using my [affiliate code](https://www.bitfinex.com/?refcode=vsAnxuo5bM) when signing up.  By doing so, you'll save 10% on all fees for the first month, and it will help support further development of this code.
 
