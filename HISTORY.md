@@ -10,3 +10,8 @@
 ### v0.1.03
 	* Added a cron tracking database, to make sure crons are running and keep a history
 	* Added a nag warning if the system detects your crons haven't run in a while
+	
+### v0.1.04
+	* Added balance to the stats charts
+	* Changed chart coloring and layout styles
+	* Fixed a major bug in the install system introduced in 0.1.03
