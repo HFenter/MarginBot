@@ -326,7 +326,14 @@ class Bitfinex{
 				$intReturn += ($c['amount']*( ($c['rate']/365)/100) );
 			}
 		}
-		$this->usdCurrentLendAvg = round( (($intReturn / $this->usdCurrentLendVal )*100),6);
+		// fixed for divide by 0
+		if($this->usdCurrentLendVal >0){
+			$this->usdCurrentLendAvg = round( (($intReturn / $this->usdCurrentLendVal )*100),6);
+		}
+		else{
+			$this->usdCurrentLendAvg = 0;
+		}
+		
 	}
 	
 	/* Grab current pending loans */
@@ -341,7 +348,13 @@ class Bitfinex{
 				$intReturn += ($o['remaining_amount']*( ($o['rate']/365)/100) );
 			}
 		}
-		$this->usdPendingAvg = round( (($intReturn /$this->usdPendingVal )*100),6);
+		// fixed for divide by 0
+		if($this->usdPendingVal >0){
+			$this->usdPendingAvg = round( (($intReturn /$this->usdPendingVal )*100),6);
+		}
+		else{
+			$this->usdPendingAvg = 0;
+		}
 	}
 	
 
