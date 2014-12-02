@@ -17,7 +17,9 @@ class General {
 	 */
 	
 	public function moneyFormat($val){
-		return money_format('%.2n', $val);
+		// money_format() function isn't available in windows.  replaces with  numberformat
+		// return money_format('%.2n', $val);
+		return '$'.number_format($val, 2);
 	}
 	public function percentFormat($val, $round=4){
 		return number_format($val, $round).' %';

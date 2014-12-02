@@ -213,9 +213,7 @@ class Bitfinex{
 			if($newUSD['message']!=''){
 				//echo '<br>Error, trying again';
 				$newUSD = $this->bitfinex_query('offer/new', $offerNew);
-			}
-			//echo "<br>".$newUSD['offer_id']." - ".money_format('%(#10n', $newUSD['remaining_amount'] )." - ".(round($newUSD['rate']/365, 5))." - Offer Placed";
-			
+			}			
 		}
 	}
 	
@@ -225,7 +223,6 @@ class Bitfinex{
 		foreach($this->usdPendingIDS as $i){
 			$offerCancel = array('offer_id' => $i);
 			$cancelUSD = $this->bitfinex_query('offer/cancel', $offerCancel);
-			//echo "<br> Canceled - ".$i;
 			}	
 	}
 	
@@ -252,9 +249,7 @@ class Bitfinex{
 				$loans[0]['amt'] = ($this->actSettings['highholdamt'] > $this->usdAvailable ? $this->usdAvailable : $this->actSettings['highholdamt']);
 				$loans[0]['rate'] = ($this->actSettings['highholdlimit']*365);
 				// always loan out highholds for 30 days... bascially we're pretty sure this is a high rate loan
-				$loans[0]['time'] = 30;
-				//echo "<br><br>High Hold Loan  = ".($loans[0]['rate']*365)."% (".$loans[0]['rate']."%) - ". $loans[0]['amt'];
-				
+				$loans[0]['time'] = 30;				
 			}
 			// is there anything left after the highhold?  if so, lets split it up //
 			if($splitAvailable > 50){
@@ -283,9 +278,6 @@ class Bitfinex{
 							// (basically, the rate is higher than normal, lets keep this loan out as long as possible)
 							//  if $this->actSettings['thirtyDayMin'] = 0, always loan for 2 days, no matter what
 							$loans[$a]['time'] = (($this->actSettings['thirtyDayMin']>0)&&($l['rate'] > ($this->actSettings['thirtyDayMin'] * 365)) ? 30 : 2);
-							
-							//echo "<br><br>Loan ".$a." = ".$loans[$a]['rate']."% (".(round(($loans[$a]['rate']/365), 6))."%) - ". $loans[$a]['amt']." (".$loans[$a]['time']." Days)";
-							//echo "<br> In Before Loan ".$l['rate']."% (".(round(($l['rate']/365), 6))."%) - ". $l['totamt'];
 							$nextlend += $gapClimb;
 							$a++;
 						}

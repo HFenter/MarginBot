@@ -51,7 +51,7 @@ class Pages {
 		
 	}
 	function showActiveAccounts($accounts){
-	
+		global $config;
 		echo '
 		<div class="panel panel-default">
 		  <div class="panel-heading">Current Bitfinex Accounts</div>

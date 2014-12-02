@@ -61,7 +61,7 @@ else{
 	}
 	
 	// ok, they're logged in, lets check for submits and load various account details //
-	if($_SESSION['userid']){
+	if(isset($_SESSION['userid'])){
 		// lets create an array of account objects we can use
 		//  level 1 accounts will only have their own details in the array,
 		// but level 9 admin accounts will have all the accounts in the db in their array
