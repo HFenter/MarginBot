@@ -207,13 +207,14 @@ class Bitfinex{
 	}
 	
 	function bitfinex_createLoanOffers($lendArray){
-		foreach($lendArray as $la){
-			$offerNew = array('currency' => 'USD', 'amount' => (string)$la['amt'],'rate' => (string)$la['rate'] ,'period' => (int)$la['time'],'direction' => 'lend');
-			$newUSD = $this->bitfinex_query('offer/new', $offerNew);
-			if($newUSD['message']!=''){
-				//echo '<br>Error, trying again';
+		if(count($lendArray)>0){
+			foreach($lendArray as $la){
+				$offerNew = array('currency' => 'USD', 'amount' => (string)$la['amt'],'rate' => (string)$la['rate'] ,'period' => (int)$la['time'],'direction' => 'lend');
 				$newUSD = $this->bitfinex_query('offer/new', $offerNew);
-			}			
+				if($newUSD['message']!=''){
+					$newUSD = $this->bitfinex_query('offer/new', $offerNew);
+				}			
+			}
 		}
 	}
 	
