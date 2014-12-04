@@ -1,4 +1,9 @@
 <?
+// apparently a lot of people leave notice reporting on when installing PHP,
+// lets not do that.
+error_reporting(E_ALL & ~E_NOTICE);
+
+
 // file configs //
 require_once("config.php");
 if($config['db']['host'] == ''){
