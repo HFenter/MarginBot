@@ -8,9 +8,12 @@ This bot is designed to manage 1 or more bitfinex accounts, doing its best to ke
 [Download the most current version](https://github.com/HFenter/MarginBot/archive/master.zip), unzip to a folder on your server, then browse to that folder.  An install script will run you through the rest of the process.
 
 
-**Note: *If you get the following error during install:* **
+**Note: *If you get the following error during install:***
+
 	PHP Parse error:  syntax error, unexpected ''America/Los_Angeles\\');' (T_CONSTANT_ENCAPSED_STRING), expecting identifier (T_STRING) in /var/www/html/web/install.php on line 92
+
 *you most likely have your PHP configured without short_open_tag = on.  Make sure to set*
+
 	short_open_tag = on
 
 ### Update from an older Version
