@@ -34,7 +34,7 @@ $cronsTableSQL = '
 $rt = $db->iquery($cronsTableSQL);
 
 
-$userIds = $db->query("SELECT id from `".$config['db']['prefix']."Users` WHERE status >= '1' ORDER BY id ASC");
+$userIds = $db->query("SELECT id from `".$config['db']['prefix']."Users` WHERE status >= '1' AND ( status != '2' AND  status != '8' )  ORDER BY id ASC");
 foreach($userIds as $uid){
 	$accounts[$uid['id']] = new $act($uid['id']);
 	/* Run the bot to update all pending loans according to account settings */	

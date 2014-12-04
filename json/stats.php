@@ -21,7 +21,7 @@ require_once('../inc/ExchangeAPIs/bitfinex.php');
 require_once("../inc/Accounts.php");
 $act = new Accounts($_SESSION['userid']);
 
-if($_REQUEST['global']==1 && $_SESSION['user_lvl']==9){
+if($_REQUEST['global']==1 && ( $_SESSION['user_lvl']==8 || $_SESSION['user_lvl']==9)){
 	// admin requesting global stats //
 	$accounts[$_SESSION['userid']] = $act;
 	// grab all the other accounts as well, load them into an array //
@@ -44,7 +44,7 @@ if($_REQUEST['global']==1 && $_SESSION['user_lvl']==9){
 	}
 	echo json_encode($cleanArray);
 }
-else if($_REQUEST['userid']!=0 && $_SESSION['user_lvl']==9){
+else if($_REQUEST['userid']!=0 && ( $_SESSION['user_lvl']==8 || $_SESSION['user_lvl']==9) ){
 	// single user stats request
 	$act2 = new Accounts($_REQUEST['userid']);
 	$accounts[$_REQUEST['userid']] = $act2;
