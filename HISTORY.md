@@ -17,6 +17,7 @@
 	* Fixed a major bug in the install system introduced in 0.1.03
 	
 ### v0.1.05
-	* If only 1 user account is set up, stats page only shows 1 chart (instead of "Global" and that user, which would always be identical)
+	* If only 1 user account is set up, stats page only shows 1 chart
+		(instead of "Global" and that user, which would always be identical)
 	* Lots of small fixes for WAMP servers
 	* Added a pause feature to disable lending
