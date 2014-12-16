@@ -72,7 +72,7 @@ else{
 		// but level 9 admin accounts will have all the accounts in the db in their array
 		$accounts[$act->userid] = $act;
 		// If the user is an admin account, grab all the other accounts as well, load them into an array //
-		if($act->sts == 9){
+		if($act->sts == 9 || $act->sts == 8 ){
 			$act->getAllAccounts();
 		}
 		
@@ -143,7 +143,7 @@ $gen->checkCronStatus();
  
           <ul class="nav navbar-nav">
             <li class="<?=($pages->activePage == 'home' ? 'active' : '');?>"><a href="index.php">Home</a></li>
-            <? if($act->sts == 9){ ?>
+            <? if($act->sts == 9 || $act->sts == 8){ ?>
             <li class="<?=($pages->activePage == 'addAct' ? 'active' : '');?>"><a href="index.php?page=addAct">Add Account</a></li>
             <? } ?>
             <li class="<?=($pages->activePage == 'viewReturns' ? 'active' : '');?>"><a href="index.php?page=viewReturns">View Overall Returns</a></li>

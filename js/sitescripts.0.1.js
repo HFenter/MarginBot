@@ -6,6 +6,29 @@
 		$('[data-toggle="tooltip"]').tooltip();
   		$('[data-toggle="popover"]').popover({trigger:'click'});
 		
+		
+		// pause / unpause lending on account //
+		$(".doPauseAct").click(function(){
+			var userId = $(this).attr("uid");
+			//alert("Posting: " + userId);
+			$.post("ajax/aj.php", { uid: userId, doPause: 1 }, function(data){
+				if(data == '1'){
+					$("#userRow_"+userId).toggleClass('danger');
+					var curState = $("#doPauseAct_"+userId).html();
+					if( curState == 'Unpause Lending'){
+						$("#doPauseAct_"+userId).html('Pause Lending');
+					}
+					else{
+						$("#doPauseAct_"+userId).html('Unpause Lending');
+					}
+				}
+				
+			});
+		});
+
+		
+		
+		
 		// jQuery formatCurrency plugin: http://plugins.jquery.com/project/formatCurrency
 
 		// Format while typing & warn on decimals entered, 2 decimal places

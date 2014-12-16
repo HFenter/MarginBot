@@ -227,7 +227,7 @@ class Pages {
 	function showViewReturns(){
 		global $accounts;
 		
-		if($_SESSION['user_lvl']==9){
+		if($_SESSION['user_lvl']==8 || $_SESSION['user_lvl']==9){
 			// global stats for all accounts //
 			echo "
 				<script type='text/javascript' src='js/global_chart.js'></script>
@@ -235,23 +235,26 @@ class Pages {
 					<div id='chart_GlobalDailyReturns' class='chartArea'><img src='img/ajax-loader.gif' class='loader'></div>
 				</div>
 				";
-			foreach($accounts as $a){
-				$userIds[] = $a->userid;
-				$userNames[] = $a->name;
-				echo "
-				<div class='bigChart'>
-					<div id='chart_UserDailyReturns_".$a->userid."' class='chartArea'><img src='img/ajax-loader.gif' class='loader'></div>
-				</div>
+			//check how many accounts are active, if more than one, show each accounts individual returns
+			if(count($accounts) > 1){
+				foreach($accounts as $a){
+					$userIds[] = $a->userid;
+					$userNames[] = $a->name;
+					echo "
+					<div class='bigChart'>
+						<div id='chart_UserDailyReturns_".$a->userid."' class='chartArea'><img src='img/ajax-loader.gif' class='loader'></div>
+					</div>
+						";
+					}
+					echo "
+					<script>
+						var userIds = [".implode(",", $userIds)."];
+						var userNames = ['".implode("','", $userNames)."'];
+					</script>
+					<script type='text/javascript' src='js/user_chart.js'></script>
+					
 					";
-                }
-				echo "
-				<script>
-					var userIds = [".implode(",", $userIds)."];
-					var userNames = ['".implode("','", $userNames)."'];
-				</script>
-				<script type='text/javascript' src='js/user_chart.js'></script>
-				
-				";
+			}
 
 		
 		}

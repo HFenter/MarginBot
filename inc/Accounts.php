@@ -19,6 +19,14 @@ class Accounts{
 		}
  	 }
 	 
+	 // sts and user_lvl (in user db as status) are as follows //
+	 // 0 - account inactive / disabled
+	 // 1 - base account
+	 // 2 - base account, lending paused
+	 // 8 - admin account, lending paused
+	 // 9 - admin account
+	 // ( it was done this way to maintain database backwards compatibilty with older installs when we added pausing )
+	 
 	 
 	/* check for a logged in user, update the session for them  */
 	function checkLoggedUser(){
@@ -183,7 +191,7 @@ class Accounts{
 		// * Create Account Objects for them  * //
 		// Only allow ADMIN accounts to do this //
 		global $config, $accounts;
-		if($this->sts==9){
+		if($this->sts==9 || $this->sts==8){
 			$userIds = $this->db->query("SELECT id from `".$config['db']['prefix']."Users` WHERE status != 0 AND id != ".$this->userid." ORDER BY id ASC");
 			foreach($userIds as $uid){
 				$accounts[$uid['id']] = new Accounts($uid['id']);
@@ -202,9 +210,9 @@ class Accounts{
 		<form action="index.php" method="post">
 			<input type="hidden" name="doUpdate" value="1">
 			<input type="hidden" name="userid" value="'.$this->userid.'">
-		<tr class="bigrow">
+		<tr class="bigrow '.( ($this->sts == 2 || $this->sts == 8 ) ? 'danger':'').'" id="userRow_'.$this->userid.'">
 				<td rowspan="2" class="mid">'.$this->userid.'</td>
-				<td rowspan="2" class="mid">'.$this->name.'</td>
+				<td rowspan="2" class="mid">'.$this->name.'<br> ( <a href="#" uid="'.$this->userid.'" class="doPauseAct" id="doPauseAct_'.$this->userid.'">'.( ($this->sts == 2 || $this->sts == 8 ) ? 'Unpause':'Pause').' Lending</a> )</td>
 				<td class="mid">'.$gen->moneyFormat($this->bfx->usdBalance).'</td>
 				<td class="mid">'.$gen->moneyFormat($this->bfx->usdAvailable).'</td>
 				<td class="mid">'.$gen->moneyFormat($this->bfx->usdPendingVal).' <span class="badge">'.number_format($this->bfx->usdPendingOffers).'</span>
