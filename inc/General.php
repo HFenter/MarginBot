@@ -21,7 +21,7 @@ class General {
 		// return money_format('%.2n', $val);
 		return '$'.number_format($val, 2);
 	}
-	public function percentFormat($val, $round=4){
+	public function percentFormat($val, $round=5){
 		return number_format($val, $round).' %';
 	}
 	

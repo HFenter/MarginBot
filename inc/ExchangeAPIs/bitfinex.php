@@ -268,12 +268,15 @@ class Bitfinex{
 				if($numSplits >= 1){
 					$gapClimb = ( ($this->actSettings['USDgapTop'] - $this->actSettings['USDgapBottom'])/($numSplits-1));
 					$nextlend = $this->actSettings['USDgapBottom'];
+					//set annual minimum for calculations //
+					$minLendRateAnnual = ($this->actSettings['minlendrate']*365);
 					foreach($this->lendbook as $l){
 						while( ($l['totamt']>=$nextlend) && ($a <= $numSplits) ){
-							
 							$loans[$a]['amt'] = $amtEach;
 							// Make sure the gap setting rate is higher than the minimum lend rate...
-							$loans[$a]['rate'] = ( ($l['rate'] - .0001) > $this->actSettings['minlendrate'] ? ($l['rate'] - .0001) : $this->actSettings['minlendrate'] ) ;
+							// ( 0.00365 / annual = 0.00001 / day )
+							$loans[$a]['rate'] = ( ($l['rate'] - 0.00365) > $minLendRateAnnual ? ($l['rate'] - 0.00365) : $minLendRateAnnual ) ;
+							echo $loans[$a]['rate'].'<br>';
 							//how long should we lend this out... as a rule, 2 days so we can cycle and get a high turnover
 							// unless its above the threshold $this->actSettings['thirtyDayMin'], in which case we should lend it for the max 30 days
 							// (basically, the rate is higher than normal, lets keep this loan out as long as possible)
