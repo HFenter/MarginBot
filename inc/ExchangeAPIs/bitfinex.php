@@ -145,7 +145,7 @@ class Bitfinex{
 		$return =0;
 		foreach($ledgerHistory as $l){
 			// check its a swap payment //
-			if($l['description'] == 'Swap Payment on wallet deposit'){
+			if(strtolower($l['description']) == strtolower('Swap Payment on wallet deposit') || strtolower($l['description'])==strtolower('Margin Funding Payment on wallet Deposit') ){	
 				$sql = "INSERT into `".$config['db']['prefix']."Tracking` (`user_id`, `trans_id`, `date`, `dep_balance`,`swap_payment`,`average_return`) VALUES 
 					('".$this->db->escapeStr($this->userid)."', '".$this->db->escapeStr($l['timestamp'])."', '".$this->db->escapeStr(date('Y-m-d', $l['timestamp']))."', '".$this->db->escapeStr($l['balance'])."','".$this->db->escapeStr($l['amount'])."','".$this->db->escapeStr(round((($l['amount'] / $l['balance']) * 100),6))."')";
 				$upd = $this->db->iquery($sql);
