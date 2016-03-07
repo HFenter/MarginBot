@@ -3,7 +3,9 @@
 JSON Return array of stats
 Needs a logged in session in order to show anything
 ////////////////////////////////*/
-
+// Turn off error reporting. This fixes the neverending ajax load graphic
+// for servers that have display of notices enabled.
+error_reporting(0);
 // file configs //
 require_once("../inc/config.php");
 
