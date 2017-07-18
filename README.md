@@ -3,6 +3,11 @@ This is a PHP based Margin Lending Management Bot for the Bitfinex [API](https:/
 ## Details
 This bot is designed to manage 1 or more bitfinex accounts, doing its best to keep any money in the "depost" wallet lent out at the highest rate possible while avoiding long periods of pending loans (as often happens when using the Flash Return Rate, or some other arbitrary rate).  There are numerous options and setting to tailor the bot to your requirements.
 
+## Read More
+You can find lots more info and discussion right here: [Bitcointalk.org](https://bitcointalk.org/index.php?topic=865250.0)
+*Also, for anyone coming from there, take this as proof that HowardF = HowardF3 = Me = MarginBot Developer*
+
+
 ### Install
 
 [Download the most current version](https://github.com/HFenter/MarginBot/archive/master.zip), unzip to a folder on your server, then browse to that folder.  An install script will run you through the rest of the process.

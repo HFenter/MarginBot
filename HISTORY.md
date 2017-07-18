@@ -21,3 +21,6 @@
 		(instead of "Global" and that user, which would always be identical)
 	* Lots of small fixes for WAMP servers
 	* Added a pause feature to disable lending
+
+### v0.1.06
+	* Incorperated 5 decimal accuracy improvements (Thanks nwfella !)
