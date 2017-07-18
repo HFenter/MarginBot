@@ -280,13 +280,13 @@ class Accounts{
 								<td><input type="text" name="spreadlend" value="'.number_format($this->bfx->actSettings['spreadlend']).'" class="form-control"></td>
 								<td>
 									<div class="input-group">
-									  <input type="text" name="minlendrate" value="'.number_format($this->bfx->actSettings['minlendrate'], 4).'" class="form-control autoPercent">
+									  <input type="text" name="minlendrate" value="'.number_format($this->bfx->actSettings['minlendrate'], 5).'" class="form-control autoPercent">
 									  <span class="input-group-addon">%</span>
 									</div>
 								</td>
 								<td>
 									<div class="input-group">
-										<input type="text" name="thirtyDayMin" value="'.number_format($this->bfx->actSettings['thirtyDayMin'], 4).'" class="form-control autoPercent">
+										<input type="text" name="thirtyDayMin" value="'.number_format($this->bfx->actSettings['thirtyDayMin'], 5).'" class="form-control autoPercent">
 										<span class="input-group-addon">%</span>
 									</div>
 								</td>
@@ -298,7 +298,7 @@ class Accounts{
 								</td>
 								<td>
 									<div class="input-group">
-										<input type="text" name="highholdlimit" value="'.number_format($this->bfx->actSettings['highholdlimit'], 4).'" class="form-control autoPercent">
+										<input type="text" name="highholdlimit" value="'.number_format($this->bfx->actSettings['highholdlimit'], 5).'" class="form-control autoPercent">
 										<span class="input-group-addon">%</span>
 									</div>
 								</td>

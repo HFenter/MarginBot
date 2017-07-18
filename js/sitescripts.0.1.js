@@ -59,7 +59,7 @@
 		});
 		// Format while typing & warn on decimals entered, 2 decimal places
 		$('.autoPercent').blur(function() {
-			$(this).formatCurrency({ colorize: false, roundToDecimalPlace: 4, symbol:"" });
+			$(this).formatCurrency({ colorize: false, roundToDecimalPlace: 5, symbol:"" });
 		})
 		.keyup(function(e) {
 			var e = window.event || e;
