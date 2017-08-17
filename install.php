@@ -26,13 +26,14 @@ if($_REQUEST['doInstall']==1){
 			$trackingSQL = 'CREATE TABLE `'.$tablePre.'Tracking` (
 			  `id` int(12) NOT NULL AUTO_INCREMENT,
 			  `user_id` smallint(4) DEFAULT NULL,
+			  `trans_cur` varchar(10) DEFAULT NULL,
 			  `trans_id` int(12) DEFAULT NULL,
 			  `date` date DEFAULT NULL,
-			  `dep_balance` decimal(12,2) DEFAULT NULL,
-			  `swap_payment` decimal(12,2) DEFAULT NULL,
+			  `dep_balance` decimal(12,8) DEFAULT NULL,
+			  `swap_payment` decimal(12,8) DEFAULT NULL,
 			  `average_return` decimal(8,6) DEFAULT NULL,
 			  PRIMARY KEY (`id`),
-			  UNIQUE KEY `uniquieKeys` (`user_id`,`trans_id`)
+			  UNIQUE KEY `uniquieKeys` (`user_id`,`trans_id`,`trans_cur`) USING BTREE
 			) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
 			
 			if ( !$mysqli->query($trackingSQL) ){
@@ -47,22 +48,26 @@ if($_REQUEST['doInstall']==1){
 			  `bfxapisec` varchar(64) DEFAULT NULL,
 			  `status` tinyint(1) DEFAULT NULL,
 			  PRIMARY KEY (`id`)
-			) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
+			) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1';
 			if ( !$mysqli->query($usersSQL) ){
 				 $warning[] = "Table creation failed: (" . $mysqli->errno . ") " . $mysqli->error;
 				}		
 			
 			$varsSQL = 'CREATE TABLE `'.$tablePre.'Vars` (
-			  `id` smallint(4) NOT NULL,
-			  `minlendrate` varchar(12) DEFAULT NULL,
-			  `spreadlend` varchar(12) DEFAULT NULL,
-			  `USDgapBottom` varchar(12) DEFAULT NULL,
-			  `USDgapTop` varchar(12) DEFAULT NULL,
-			  `thirtyDayMin` varchar(12) DEFAULT NULL,
-			  `highholdlimit` varchar(12) DEFAULT NULL,
-			  `highholdamt` varchar(12) DEFAULT NULL,
-			  PRIMARY KEY (`id`)
-			) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
+				  `id` smallint(4) NOT NULL AUTO_INCREMENT,
+				  `userid` smallint(4) DEFAULT NULL,
+				  `curType` varchar(10) DEFAULT NULL,
+				  `minlendrate` varchar(12) DEFAULT NULL,
+				  `spreadlend` varchar(12) DEFAULT NULL,
+				  `USDgapBottom` varchar(12) DEFAULT NULL,
+				  `USDgapTop` varchar(12) DEFAULT NULL,
+				  `thirtyDayMin` varchar(12) DEFAULT NULL,
+				  `highholdlimit` varchar(12) DEFAULT NULL,
+				  `highholdamt` varchar(12) DEFAULT NULL,
+				  `extractAmt` varchar(12) DEFAULT NULL,
+				  PRIMARY KEY (`id`),
+				  UNIQUE KEY `unqType` (`userid`,`curType`)
+				) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1';
 			if ( !$mysqli->query($varsSQL) ){
 				 $warning[] = "Table creation failed: (" . $mysqli->errno . ") " . $mysqli->error;
 				}
@@ -76,6 +81,17 @@ if($_REQUEST['doInstall']==1){
 				  PRIMARY KEY (`id`)
 				) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
 			if ( !$mysqli->query($cronsTableSQL) ){
+				 $warning[] = "Table creation failed: (" . $mysqli->errno . ") " . $mysqli->error;
+				}
+			$pairsTableSQL = '
+				CREATE TABLE  `'.$tablePre.'CurPairs` (
+				  `id` smallint(4) NOT NULL AUTO_INCREMENT,
+				  `curSym` varchar(12) DEFAULT NULL,
+				  `curName` varchar(100) DEFAULT NULL,
+				  `status` tinyint(1) DEFAULT NULL,
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1';
+			if ( !$mysqli->query($pairsTableSQL) ){
 				 $warning[] = "Table creation failed: (" . $mysqli->errno . ") " . $mysqli->error;
 				}
 			
@@ -190,9 +206,13 @@ else if($_REQUEST['doInstall']==2){
 			
 			if($newUser['id']!=0){
 				//  Set default settings for the account //
-				$sql = "INSERT into `".$config['db']['prefix']."Vars` (`id`,`minlendrate`,`spreadlend`,`USDgapBottom`,`USDgapTop`,`thirtyDayMin`,`highholdlimit`,`highholdamt` )
+				$sql = "INSERT into `".$config['db']['prefix']."Vars` (`userid`,`curType`,`minlendrate`,`spreadlend`,`USDgapBottom`,`USDgapTop`,`thirtyDayMin`,`highholdlimit`,`highholdamt` )
 					 VALUES
-					 ( '".$newUser['id']."', '0.0650', '3', '25000', '100000', '0.1500', '0.3500', '0' )";
+					 ( '".$newUser['id']."', 'USD', '0.0650', '3', '25000', '100000', '0.1500', '0.3500', '0' )";
+				$newActSettings = $db->iquery($sql);
+				$sql = "INSERT into `".$config['db']['prefix']."Vars` (`userid`,`curType`,`minlendrate`,`spreadlend`,`USDgapBottom`,`USDgapTop`,`thirtyDayMin`,`highholdlimit`,`highholdamt` )
+					 VALUES
+					 ( '".$newUser['id']."', 'BTC', '0.0150', '2', '2', '10', '0.1500', '0.3500', '0' )";
 				$newActSettings = $db->iquery($sql);
 				
 				// Success, tell them they need to login now //
@@ -201,9 +221,20 @@ else if($_REQUEST['doInstall']==2){
 
 			}
 		}
+		else{
+			if(stristr($bt['message'], "permission")){
+				//API Key Not Set up for correct permissions
+				$warning[] = 'Your Bitfinex API Key doesn\'t seem to have the correct permissions.<br>Make sure you allow the key "Read" access to Account Info, Account History, Orders, Margin Trading, Margin Funding, and Wallets.<br>Make sure you allow the key "Write" access to Margin Funding and Wallets.<br>Do NOT allow the key any access to Withdraw for security reasons.';
+			}
+			else{
+				$warning[] = 'Something doesn\'t seem to be working.  Most likely you haven\'t set up your API Key correctly.<br>Make sure you allow the key "Read" access to Account Info, Account History, Orders, Margin Trading, Margin Funding, and Wallets.<br>Make sure you allow the key "Write" access to Margin Funding and Wallets.<br>Do NOT allow the key any access to Withdraw for security reasons.';
+			}
+			$_REQUEST['doInstall']==2;
+		}
 	}
 	else{
-		// something wasn't right, make them fixe it....
+		// something wasn't right, make them fix it....
+		$warning[] = 'Something doesn\'t seem to be working.  Most likely you haven\'t set up your API Key correctly.<br>Make sure you allow the key "Read" access to Account Info, Account History, Orders, Margin Trading, Margin Funding, and Wallets.<br>Make sure you allow the key "Write" access to Margin Funding and Wallets.<br>Do NOT allow the key any access to Withdraw for security reasons.';
 		$_REQUEST['doInstall']==2;
 	}
 }

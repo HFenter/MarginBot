@@ -27,18 +27,7 @@ You can find lots more info and discussion right here: [Bitcointalk.org](https:/
 
 To update, **make a backup of your inc/config.php file**, then [download the most current version](https://github.com/HFenter/MarginBot/archive/master.zip).  Unzip the files and overwrite your existing install.  
 
-In your inc/config.php file, update the following lines, copying over from your previous backup:
-
-	$config['db']['host'] = '';
-	$config['db']['dbname'] = '';
-	$config['db']['dbuser'] = '';
-	$config['db']['dbpass'] = '';
-	
-	$config['db']['prefix'] = '';
-	
-	$config['admin_email'] = 'support@fuckedgox.com';
-
-(In future versions, backing up the config file then overwriting it during an update should be easier, but I didn't plan correctly in the first version... oops)
+Then overwrite the default config.php file with your backed up version.  Visit the site, and you'll be redirected to an update system.  If you are not correctly redirected, just visit /MarginBot/update.php
 
 
 ## Requirements
@@ -59,4 +48,4 @@ Developing this software, and testing the various strategies for lending that le
 
 You can send donations to:
 
-Bitcoin: 1A3y1xDXtyZySmPZySbpz7PPog4Vsyqig1
+Bitcoin: 17x2SsY8bpZVC4QH8Va3Qz7HggaDshhjjr

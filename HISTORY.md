@@ -24,3 +24,8 @@
 
 ### v0.1.06
 	* Incorperated 5 decimal accuracy improvements (Thanks nwfella !)
+
+### v0.1.07
+	* Updates to core trading engine
+	* Added Crytpo Lending.  Currently supports the full list of BFX lendable currencies (as of 8/17/2017)
+	* Lots of small tweaks, updates and fixes.

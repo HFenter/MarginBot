@@ -51,10 +51,15 @@ class Pages {
 		
 	}
 	function showActiveAccounts($accounts){
-		global $config;
+		global $config,$gen;
+		// check currency against form submission
+		if($_REQUEST['curType']!= ''){$_REQUEST['funding'] = $_REQUEST['curType'];}
+		// default to USD
+		if($_REQUEST['funding'] == ''){$_REQUEST['funding'] = 'USD';}
+		
 		echo '
 		<div class="panel panel-default">
-		  <div class="panel-heading">Current Bitfinex Accounts</div>
+		  <div class="panel-heading">Current '.$gen->symbol2name($_REQUEST['funding']).' Bitfinex Accounts</div>
 		  <div class="panel-body table-responsive">
 			<table class="table table-striped table-bordered">
 				<thead>

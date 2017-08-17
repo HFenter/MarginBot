@@ -26,7 +26,13 @@
 			});
 		});
 
-		
+		// extract max button //
+	
+		$(".maxExtract").click(function () {
+			event.preventDefault();
+			var thisFund = $(this).val();
+			$("#extractAmt_"+thisFund).val("MAX");
+		});
 		
 		
 		// jQuery formatCurrency plugin: http://plugins.jquery.com/project/formatCurrency

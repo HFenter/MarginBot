@@ -87,6 +87,7 @@ class Accounts{
 				// update account object with user info //
 				$this->userid = $userLog[0]['id'];
 				$this->getAccount();
+				return true;
 			} else {
 			 // passwords didn't match, show an error
 			$warning[] = "Your Password didn't match our records, Please Try Again.";
@@ -202,31 +203,44 @@ class Accounts{
 	
 	function displayDetailsTableRow(){
 		global $gen, $config;
-		$yesterdayRet = $this->get1DayReturns();
-		$thirtydayRet = $this->get30DayReturns();
-		$fullRet = $this->getFullReturns();
-		$estReturn = (($this->bfx->usdCurrentLendVal * ($this->bfx->usdCurrentLendAvg/100)) * ((100 - $config['curFeesBFX'])/100));
+		$thisCurrency = $_REQUEST['funding'];
+		
+		$yesterdayRet = $this->get1DayReturns($thisCurrency);
+		$thirtydayRet = $this->get30DayReturns($thisCurrency);
+		$fullRet = $this->getFullReturns($thisCurrency);
+		$estReturn = (($this->bfx->cryptoCurrentLendVal[$thisCurrency] * ($this->bfx->cryptoCurrentLendAvg[$thisCurrency]/100)) * ((100 - $config['curFeesBFX'])/100));
+		
+		
 		echo '
-		<form action="index.php" method="post">
-			<input type="hidden" name="doUpdate" value="1">
-			<input type="hidden" name="userid" value="'.$this->userid.'">
 		<tr class="bigrow '.( ($this->sts == 2 || $this->sts == 8 ) ? 'danger':'').'" id="userRow_'.$this->userid.'">
 				<td rowspan="2" class="mid">'.$this->userid.'</td>
-				<td rowspan="2" class="mid">'.$this->name.'<br> ( <a href="#" uid="'.$this->userid.'" class="doPauseAct" id="doPauseAct_'.$this->userid.'">'.( ($this->sts == 2 || $this->sts == 8 ) ? 'Unpause':'Pause').' Lending</a> )</td>
-				<td class="mid">'.$gen->moneyFormat($this->bfx->usdBalance).'</td>
-				<td class="mid">'.$gen->moneyFormat($this->bfx->usdAvailable).'</td>
-				<td class="mid">'.$gen->moneyFormat($this->bfx->usdPendingVal).' <span class="badge">'.number_format($this->bfx->usdPendingOffers).'</span>
-					<br>( '.$gen->percentFormat($this->bfx->usdPendingAvg).' )</td>
-				<td class="mid">'.$gen->moneyFormat($this->bfx->usdCurrentLendVal).' <span class="badge">'.number_format(count($this->bfx->usdCurrentLends)).'</span>
-					<br>( '.$gen->percentFormat($this->bfx->usdCurrentLendAvg).' )</td>
-				<td class="mid">'.$gen->moneyFormat($estReturn).'</td>
+				<td rowspan="2" class="mid">'.$this->name.'<br> 
+					( <a href="#" uid="'.$this->userid.'" class="doPauseAct" id="doPauseAct_'.$this->userid.'">'.( ($this->sts == 2 || $this->sts == 8 ) ? 'Unpause':'Pause').' Lending</a> )<br>
+					( <a class="collapsed" data-toggle="collapse" href="#collapseListExtract'.$this->userid.'" aria-expanded="false" aria-controls="collapseListExtract'.$this->userid.'">Extract</a> )
+				</td>
+				<td class="mid">'.$gen->cryptoFormat($this->bfx->cryptoBalance[$thisCurrency], 8, $thisCurrency).'</td>
+				<td class="mid">'.$gen->cryptoFormat($this->bfx->cryptoAvailable[$thisCurrency], 8, $thisCurrency).'</td>
+				<td class="mid">'.$gen->cryptoFormat($this->bfx->cryptoPendingVal[$thisCurrency], 8, $thisCurrency).' <span class="badge">'.number_format($this->bfx->cryptoPendingOffers[$thisCurrency]).'</span>
+					<br>('.$gen->percentFormat($this->bfx->cryptoPendingAvg[$thisCurrency]).')
+					<br>(<a class="collapsed" data-toggle="collapse" href="#collapseListPending'.$this->userid.'" aria-expanded="false" aria-controls="collapseListPending'.$this->userid.'">Show</a>)
+				</td>
+				<td class="mid">'.$gen->cryptoFormat($this->bfx->cryptoCurrentLendVal[$thisCurrency], 8, $thisCurrency).' <span class="badge">'.number_format(count($this->bfx->cryptoCurrentLends[$thisCurrency])).'</span>
+					<br>('.$gen->percentFormat($this->bfx->cryptoCurrentLendAvg[$thisCurrency]).')
+					<br>(<a class="collapsed" data-toggle="collapse" href="#collapseListOutstanding'.$this->userid.'" aria-expanded="false" aria-controls="collapseListOutstanding'.$this->userid.'">Show</a>)
+				</td>
+				<td class="mid">'.$gen->cryptoFormat($estReturn, 8, $thisCurrency).'</td>
 				
-				<td class="mid">'.$gen->moneyFormat($yesterdayRet['intTotal']).'<br>( '.$gen->percentFormat($yesterdayRet['avgInt']).' )</td>
-				<td class="mid">'.$gen->moneyFormat($thirtydayRet['intTotal']).'<br>( '.$gen->percentFormat($thirtydayRet['avgInt']).' )</td>
-				<td class="mid">'.$gen->moneyFormat($fullRet['intTotal']).'<br>( '.$gen->percentFormat($fullRet['avgInt']).' )</td>
+				<td class="mid">'.$gen->cryptoFormat($yesterdayRet['intTotal'], 8, $thisCurrency).'<br>('.$gen->percentFormat($yesterdayRet['avgInt']).')</td>
+				<td class="mid">'.$gen->cryptoFormat($thirtydayRet['intTotal'], 8, $thisCurrency).'<br>('.$gen->percentFormat($thirtydayRet['avgInt']).')</td>
+				<td class="mid">'.$gen->cryptoFormat($fullRet['intTotal'], 8, $thisCurrency).'<br>('.$gen->percentFormat($fullRet['avgInt']).')</td>
 			</tr>
 			<tr style="border-bottom: 2px solid #ddd;">
 				<td colspan="8" style="padding: 0px;margin: 0px;">
+					<!-- Change Settings Div -->
+					<form action="index.php" method="post">
+					<input type="hidden" name="doUpdate" value="1">
+					<input type="hidden" name="userid" value="'.$this->userid.'">
+					<input type="hidden" name="curType" value="'.$thisCurrency.'">
 					<div class="panel-group" role="tablist" style="margin:0px;">
 					<div class="panel panel-default">
 					  <div class="panel-heading" role="tab" id="collapseListGroupHeading'.$this->userid.'">
@@ -236,7 +250,7 @@ class Accounts{
 						  		<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
 							</div>
 							
-							Change Lending Options for '.$this->name.'
+							Change Lending Options for '.$this->name.' - '.$gen->symbol2name($_REQUEST['funding']).'
 						  </a>
 						</h4>
 					  </div>
@@ -277,41 +291,41 @@ class Accounts{
 								</td>
 							</tr>
 							<tr>
-								<td><input type="text" name="spreadlend" value="'.number_format($this->bfx->actSettings['spreadlend']).'" class="form-control"></td>
+								<td><input type="text" name="spreadlend" value="'.number_format($this->bfx->actSettings['spreadlend'][$thisCurrency]).'" class="form-control"></td>
 								<td>
 									<div class="input-group">
-									  <input type="text" name="minlendrate" value="'.number_format($this->bfx->actSettings['minlendrate'], 5).'" class="form-control autoPercent">
+									  <input type="text" name="minlendrate" value="'.number_format($this->bfx->actSettings['minlendrate'][$thisCurrency], 5).'" class="form-control autoPercent">
 									  <span class="input-group-addon">%</span>
 									</div>
 								</td>
 								<td>
 									<div class="input-group">
-										<input type="text" name="thirtyDayMin" value="'.number_format($this->bfx->actSettings['thirtyDayMin'], 5).'" class="form-control autoPercent">
+										<input type="text" name="thirtyDayMin" value="'.number_format($this->bfx->actSettings['thirtyDayMin'][$thisCurrency], 5).'" class="form-control autoPercent">
 										<span class="input-group-addon">%</span>
 									</div>
 								</td>
 								<td>
 									<div class="input-group">
-										<span class="input-group-addon">$</span>
-										<input type="text" name="highholdamt" value="'.number_format($this->bfx->actSettings['highholdamt'], 2).'" class="form-control autoCurrency">
+										<span class="input-group-addon">'.$thisCurrency.'</span>
+										<input type="text" name="highholdamt" value="'.number_format($this->bfx->actSettings['highholdamt'][$thisCurrency], 2).'" class="form-control autoCurrency">
 									</div>
 								</td>
 								<td>
 									<div class="input-group">
-										<input type="text" name="highholdlimit" value="'.number_format($this->bfx->actSettings['highholdlimit'], 5).'" class="form-control autoPercent">
+										<input type="text" name="highholdlimit" value="'.number_format($this->bfx->actSettings['highholdlimit'][$thisCurrency], 5).'" class="form-control autoPercent">
 										<span class="input-group-addon">%</span>
 									</div>
 								</td>
 							</tr>
 							<tr style="font-size: 10px;">
 								<th class="mid" style="width: 150px;" colspan="2">
-									<div style="padding-top:1px;" aria-label="Help" class="pull-right"  data-toggle="popover" data-placement="right" title="Gap Bottom" data-content="How far, in $USD, you want to move through the Bitfinex Lendbook before placing your first Loan Offer. If you want your offer set as the lowest rate on the book at each update, set this to $0 ( Not Recommended ).  For a detailed explanation, visit the help section.">
+									<div style="padding-top:1px;" aria-label="Help" class="pull-right"  data-toggle="popover" data-placement="right" title="Gap Bottom" data-content="How far, in '.$thisCurrency.', you want to move through the Bitfinex Lendbook before placing your first Loan Offer. If you want your offer set as the lowest rate on the book at each update, set this to $0 ( Not Recommended ).  For a detailed explanation, visit the help section.">
 									  <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
 									</div>
 									Gap Bottom
 								</th>
 								<th class="mid" style="width: 150px;" colspan="2">
-									<div style="padding-top:1px;" aria-label="Help" class="pull-right"  data-toggle="popover" data-placement="right" title="Gap Top" data-content="How far, in $USD, you want to move through the Bitfinex Lendbook before placing your highest Loan Offer. Your loan offeres will be spread evenly between Gap Bottom and Gap Top depending on your \'Spread Available Lends\' setting above.  For a detailed explanation, visit the help section.">
+									<div style="padding-top:1px;" aria-label="Help" class="pull-right"  data-toggle="popover" data-placement="right" title="Gap Top" data-content="How far, in '.$thisCurrency.', you want to move through the Bitfinex Lendbook before placing your highest Loan Offer. Your loan offeres will be spread evenly between Gap Bottom and Gap Top depending on your \'Spread Available Lends\' setting above.  For a detailed explanation, visit the help section.">
 									  <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
 									</div>
 									Gap Top
@@ -321,14 +335,14 @@ class Accounts{
 							<tr>
 								<td colspan="2">
 									<div class="input-group">
-										<span class="input-group-addon">$</span>
-										<input type="text" name="USDgapBottom" value="'.number_format($this->bfx->actSettings['USDgapBottom'], 2).'" class="form-control autoCurrency">
+										<span class="input-group-addon">'.$thisCurrency.'</span>
+										<input type="text" name="USDgapBottom" value="'.number_format($this->bfx->actSettings['USDgapBottom'][$thisCurrency], 2).'" class="form-control autoCurrency">
 									</div>
 								</td>
 								<td colspan="2">
 									<div class="input-group">
-										<span class="input-group-addon">$</span>
-										<input type="text" name="USDgapTop" value="'.number_format($this->bfx->actSettings['USDgapTop'], 2).'" class="form-control autoCurrency">
+										<span class="input-group-addon">'.$thisCurrency.'</span>
+										<input type="text" name="USDgapTop" value="'.number_format($this->bfx->actSettings['USDgapTop'][$thisCurrency], 2).'" class="form-control autoCurrency">
 									</div>
 								</td>
 								<td></td>
@@ -337,12 +351,172 @@ class Accounts{
 					  </div>
 					</div>
 				  </div>
-					
+				  </form>
+				  
+				  
+				  
+				<!-- Extract Money Settings -->
+				<form action="index.php" method="post">
+					<input type="hidden" name="doUpdateExtract" value="1">
+					<input type="hidden" name="userid" value="'.$this->userid.'">
+					<input type="hidden" name="curType" value="'.$thisCurrency.'">
+					<div class="panel-group" role="tablist" style="margin:0px;">
+					<div class="panel panel-default">
+					  <div id="collapseListExtract'.$this->userid.'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListExtractHeading'.$this->userid.'" aria-expanded="false" style="height: 0px;">
+						<table class="table table-striped table-bordered" style="padding: 0px;margin: 0px;">
+							<thead>
+							<tr style="font-size: 10px;">
+								<th class="mid" style="width: 250px;">Fullfilled</th>
+								<th class="mid">ETA</th>
+								<th class="mid" style="width: 500px;">Amount</th>
+							</tr>
+							</thead>
+							<tbody>
+							
+							<tr>';
+							
+							if($this->bfx->actSettings['extractAmt'] > 0 ){
+								echo '
+									<td class="mid">'.($this->bfx->cryptoAvailable[$thisCurrency] >= $this->bfx->actSettings['extractAmt'][$thisCurrency] ? '<span class="text-success"><strong>'.$gen->moneyFormat($this->bfx->actSettings['extractAmt'][$thisCurrency]).'</strong>' : '<span class="text-danger">'.$gen->moneyFormat($this->bfx->cryptoAvailable) ).' of '.$gen->moneyFormat($this->bfx->actSettings['extractAmt'][$thisCurrency]).' USD</span></td>
+									<td class="mid">'.($this->bfx->cryptoAvailable[$thisCurrency] >= $this->bfx->actSettings['extractAmt'][$thisCurrency] ? '<span class="text-success"><strong>AVAILABLE NOW</strong>' : '<span class="text-danger">'.$gen->howLongToExpire($this->getTimeToExtract())).'</span></td>
+								';
+							}
+							else if($this->bfx->actSettings['extractAmt'][$thisCurrency] == -1 ){
+								echo '
+									<td class="mid">'.($this->bfx->cryptoAvailable[$thisCurrency] == $this->bfx->cryptoBalance[$thisCurrency] ? '<span class="text-success"><strong>'.$gen->moneyFormat($this->bfx->cryptoBalance[$thisCurrency]).'</strong>' : '<span class="text-danger">'.$gen->moneyFormat($this->bfx->cryptoAvailable[$thisCurrency]) ).' of MAX '.$thisCurrency.'</span></td>
+									<td class="mid">'.($this->bfx->cryptoAvailable[$thisCurrency] == $this->bfx->cryptoBalance[$thisCurrency] ? '<span class="text-success"><strong>AVAILABLE NOW</strong>' : '<span class="text-danger">'.$gen->howLongToExpire($this->getTimeToExtract())).'</span></td>
+								';
+							}
+							else{
+								echo '
+									<td class="mid">N/A</td>
+									<td class="mid">N/A</td>
+								';
+							}
+							echo '
+								<td>
+									<div class="input-group" style="float:left;">
+										<span class="input-group-addon">'.$thisCurrency.'</span>
+										<input type="text" name="extractAmt" id="extractAmt_'.$this->userid.'" value="'.($this->bfx->actSettings['extractAmt'][$thisCurrency] == -1 ? 'MAX' : number_format($this->bfx->actSettings['extractAmt'][$thisCurrency], 2)).'" class="form-control autoCurrency">
+									</div>
+									<div style="float:right;">
+										<button style="width:100px;white-space: normal !important;" class="btn btn-warning maxExtract" value="'.$this->userid.'">MAX</button>
+										<button style="width:100px;white-space: normal !important;" class="btn btn-primary" type="submit">Save</button>
+									</div>
+								</td>
+							</tr>
+							</tbody>
+						</table></div></div></div>
+					</form>
+					'.$this->showPendingLends($thisCurrency).'
+					'.$this->showOpenLends($thisCurrency).'
 				</td>
 			</tr>
-			</form>
+			
 			';
+			
+			
+			
 	}
+	
+	
+	function showPendingLends($thisCurrency='USD'){
+		global $gen, $config;
+		$return = '
+				<!-- Pending Loans -->
+					<div class="panel-group" role="tablist" style="margin:0px;">
+					<div class="panel panel-default">
+					  <div id="collapseListPending'.$this->userid.'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListPendingHeading'.$this->userid.'" aria-expanded="false" style="height: 0px;">
+						<table class="table table-striped table-bordered sortableTable" style="padding: 0px;margin: 0px;">
+							<thead>
+							<tr style="font-size: 10px;">
+								<th class="mid" style="width: 60px;">Currency</th>
+								<th class="mid" style="width: 110px;">N. of Swap Contracts</th>
+								<th class="mid" style="width: 110px;">Rate (% per day)</th>
+								<th class="mid" style="width: 110px;">Swap Time</th>
+								<th class="mid" style="width: 100px;">Placed at</th>
+							</tr>
+							</thead>
+							<tbody>
+							
+							';
+							//print_r($this->bfx->usdPendingLends);
+						if(count($this->bfx->cryptoPendingLends[$thisCurrency]) == 0){
+							$return .= '
+							<tr id="pending_0">
+								<td colspan="5" class="mid info lead">No Pending Loans</td>
+							</tr>';
+						}
+						else{
+								
+							foreach($this->bfx->cryptoPendingLends[$thisCurrency] as $p){
+								//$expireTime = $l['timestamp'] + ($l['period'] * 86400);
+								
+								$return .= '
+								<tr id="pending_'.$p['id'].'">
+									<td>'.$p['currency'].'</td>
+									<td>'.$p['remaining_amount'].'</td>
+									<td>'.$gen->percentFormat( $p['rate'] / 365).'</td>
+									<td>'.$p['period'].' Days</td>
+									<td>'.date('d M h:i',  $p['timestamp']).'</td>
+									
+								</tr>';
+								
+							}
+						}
+					$return .= '</tbody>
+						</table></div></div></div>';
+						
+			return $return;
+		
+	}
+	
+	function showOpenLends($thisCurrency='USD'){
+		global $gen, $config;
+		$return = '
+			<!-- Outstanding Loans -->
+					<div class="panel-group" role="tablist" style="margin:0px;">
+					<div class="panel panel-default">
+					  <div id="collapseListOutstanding'.$this->userid.'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListOutstandingHeading'.$this->userid.'" aria-expanded="false" style="height: 0px;">
+						<table class="table table-striped table-bordered sortableTable" style="padding: 0px;margin: 0px;">
+							<thead>
+							<tr style="font-size: 10px;">
+								<th class="mid" style="width: 60px;">Currency</th>
+								<th class="mid" style="width: 110px;">N. of Swap Contracts</th>
+								<th class="mid" style="width: 110px;">Rate (% per day)</th>
+								<th class="mid" style="width: 100px;">Opened at</th>
+								<th class="mid" style="width: 110px;">Expire in</th>
+							</tr>
+							</thead>
+							<tbody>
+							';
+			if(count($this->bfx->cryptoCurrentLends[$thisCurrency]) == 0){
+							$return .= '
+							<tr id="outstanding_0">
+								<td colspan="5" class="mid info lead">No Outstanding Loans</td>
+							</tr>';
+			}
+			else{
+				foreach($this->bfx->cryptoCurrentLends[$thisCurrency] as $l){
+					$expireTime = $l['timestamp'] + ($l['period'] * 86400);
+					
+					$return .= '
+								<tr id="outstanding_'.$l['id'].'">
+									<td>'.$l['currency'].'</td>
+									<td>'.$l['amount'].'</td>
+									<td>'.$gen->percentFormat( $l['rate'] / 365).'</td>
+									<td>'.date('d M h:i',  $l['timestamp']).'</td>
+									<td>'.$gen->howLongToExpire($expireTime).'</td>
+									
+								</tr>';
+								
+					}
+				}
+		$return .= '</tbody></table></div></div></div>';
+		return $return;
+		
+	}
+	
 	
 	function updateSettings(){
 		global $config, $alert, $warning;
@@ -357,12 +531,38 @@ class Accounts{
 		
 		
 		// write defaults to db
+		/*
 		$sql = "UPDATE `".$config['db']['prefix']."Vars` SET  minlendrate = '".$this->db->escapeStr($minlendrate)."', spreadlend = '".$this->db->escapeStr($spreadlend)."',
 				USDgapBottom = '".$this->db->escapeStr($USDgapBottom)."', USDgapTop = '".$this->db->escapeStr($USDgapTop)."', 
 				thirtyDayMin = '".$this->db->escapeStr($thirtyDayMin)."', 
 				highholdlimit = '".$this->db->escapeStr($highholdlimit)."', 
 				highholdamt = '".$this->db->escapeStr($highholdamt)."'
-				 WHERE id = '".$this->db->escapeStr($this->userid)."' LIMIT 1";
+				 WHERE userid = '".$this->db->escapeStr($this->userid)."' AND curType = '".$this->db->escapeStr($_REQUEST['curType'])."' LIMIT 1";
+		*/		 
+		$sql = "REPLACE INTO `".$config['db']['prefix']."Vars` 
+					(
+						`minlendrate`,
+						`spreadlend`,
+						`USDgapBottom`,
+						`USDgapTop`,
+						`thirtyDayMin`,
+						`highholdlimit`,
+						`highholdamt`,
+						`userid`,
+						`curType`
+					)
+				VALUES 
+					(
+						'".$this->db->escapeStr($minlendrate)."',
+						'".$this->db->escapeStr($spreadlend)."',
+						'".$this->db->escapeStr($USDgapBottom)."',
+						'".$this->db->escapeStr($USDgapTop)."', 
+						'".$this->db->escapeStr($thirtyDayMin)."', 
+						'".$this->db->escapeStr($highholdlimit)."',
+						'".$this->db->escapeStr($highholdamt)."',
+						'".$this->db->escapeStr($this->userid)."',
+						'".$this->db->escapeStr($_REQUEST['curType'])."'
+					)";
 				 
 				 //echo $sql;
 		$upd = $this->db->iquery($sql);
@@ -375,35 +575,87 @@ class Accounts{
 		
 	}
 	
+	// Update Extraction
+	function updateExtractSettings(){
+		global $config, $alert, $warning;
+		
+		if(strtolower($_REQUEST['extractAmt']) == 'max'){
+			$extractAmt = -1;
+		}
+		else{
+			$extractAmt = preg_replace('/[^0-9.]/', '', $_REQUEST['extractAmt']);
+		}
+		// write defaults to db
+		$sql = "UPDATE `".$config['db']['prefix']."Vars` SET  extractAmt = '".$this->db->escapeStr($extractAmt)."'
+				WHERE userid = '".$this->db->escapeStr($this->userid)."' AND curType = '".$this->db->escapeStr($_REQUEST['curType'])."' LIMIT 1";
+				 
+		$upd = $this->db->iquery($sql);
+		
+		/* Update the BFX Object */
+		$this->bfx = new Bitfinex($this->userid, $this->apiKey, $this->apiSec, $this->bfx->nonceInc);
+				
+		$alert[] = '<strong>User '.$this->name.'</strong> Extraction Settings Updated';
+		
+	}
+	
 	
 	//////////////////////////////////
 	//  Statistics Stuff			//
 	//////////////////////////////////
 	
 	/* Loan Return Details */
-	function get1DayReturns(){
+	function get1DayReturns($cur='USD'){
 		global $config;
-		$averageReturn = $this->db->query("SELECT swap_payment as intTotal, ((swap_payment / dep_balance)*100) as avgInt FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($this->userid)."' and date = DATE_SUB(CURDATE(), INTERVAL 1 DAY)");
+		$averageReturn = $this->db->query("SELECT swap_payment as intTotal, ((swap_payment / dep_balance)*100) as avgInt FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($this->userid)."' AND trans_cur = '".$this->db->escapeStr($cur)."'  and date = DATE_SUB(CURDATE(), INTERVAL 1 DAY)");
 		return $averageReturn[0];
 	}
-	function get30DayReturns(){
+	function get30DayReturns($cur='USD'){
 		global $config;
-		$averageReturn = $this->db->query("SELECT SUM(swap_payment) as intTotal, (SUM(swap_payment) / SUM(dep_balance))*100 as avgInt FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($this->userid)."' and date BETWEEN DATE_SUB(NOW(), INTERVAL 31 DAY) AND DATE_SUB(NOW(), INTERVAL 1 DAY)");
+		$averageReturn = $this->db->query("SELECT SUM(swap_payment) as intTotal, (SUM(swap_payment) / SUM(dep_balance))*100 as avgInt FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($this->userid)."' AND trans_cur = '".$this->db->escapeStr($cur)."' and date BETWEEN DATE_SUB(NOW(), INTERVAL 31 DAY) AND DATE_SUB(NOW(), INTERVAL 1 DAY)");
 		return $averageReturn[0];
 	}
-	function getFullReturns(){
+	function getFullReturns($cur='USD'){
 		global $config;
-		$averageReturn = $this->db->query("SELECT SUM(swap_payment) as intTotal, (SUM(swap_payment) / SUM(dep_balance))*100 as avgInt FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($this->userid)."'");
+		$averageReturn = $this->db->query("SELECT SUM(swap_payment) as intTotal, (SUM(swap_payment) / SUM(dep_balance))*100 as avgInt FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($this->userid)."' AND trans_cur = '".$this->db->escapeStr($cur)."'");
 		return $averageReturn[0];
 	}
 	
-	function getStatsArray( $uid = 0){
+	function getStatsArray( $uid = 0, $cur='USD'){
 		global $config;
 		if($uid == 0){
 			$uid = $this->userid;
 		}
-		$averageReturn = $this->db->query("SELECT date, swap_payment, average_return, dep_balance FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($uid)."'");
+		$averageReturn = $this->db->query("SELECT date, swap_payment, average_return, dep_balance FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($uid)."' AND trans_cur = '".$this->db->escapeStr($cur)."' ");
 		return $averageReturn;		
+	}
+	
+	
+	function getTimeToExtract(){
+		$returnTimeStamp = '';
+		if($this->bfx->actSettings['extractAmt'][$thisCurrency] == -1){
+			$exAmt = $this->bfx->cryptoBalance[$thisCurrency]; 
+		}
+		else{
+			$exAmt = $this->bfx->actSettings['extractAmt'][$thisCurrency];
+		}
+		
+		
+		if(count($this->bfx->cryptoCurrentLends[$thisCurrency]) > 0){
+			foreach($this->bfx->cryptoCurrentLends[$thisCurrency] as $key=>$cl){
+				$expireTime = $cl['timestamp']+($cl['period'] * 86400);
+				$expireMoney[$expireTime] = $cl['amount'];
+			}
+			ksort($expireMoney);
+			$totBack = $this->bfx->cryptoAvailable[$thisCurrency];
+			foreach($expireMoney as $key=>$em){
+				if($totBack < $exAmt){
+					$totBack += $em;
+					$returnTimeStamp = $key;
+				}
+			}
+		}
+		return $returnTimeStamp;
+		
 	}
 	
 }

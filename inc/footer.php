@@ -24,7 +24,7 @@
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>
 
-<script src="js/sitescripts.0.1.js"></script>
+<script src="js/sitescripts.0.2.js"></script>
 
 
 </body>

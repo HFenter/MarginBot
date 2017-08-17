@@ -55,7 +55,9 @@ if($_REQUEST['doLogout']==1){
 else{
 	if($_REQUEST['login_email']){
 		// attempt to log in user //
-		$act->doLoginUser();
+		if(!$act->doLoginUser()){
+			$pages->activePage = 'doLogin';
+		}
 	}
 	else if(!$act->checkLoggedUser()){
 		/*
@@ -84,6 +86,10 @@ else{
 		// Update Account Settings //
 		if($_REQUEST['doUpdate']==1){
 			$accounts[$_REQUEST['userid']]->updateSettings();
+		}
+		// Update Account Extract Settings //
+		if($_REQUEST['doUpdateExtract']==1){
+			$accounts[$_REQUEST['userid']]->updateExtractSettings();
 		}
 	}
 
@@ -142,7 +148,19 @@ $gen->checkCronStatus();
         <? if($_SESSION['userid']!=''){ ?>
  
           <ul class="nav navbar-nav">
-            <li class="<?=($pages->activePage == 'home' ? 'active' : '');?>"><a href="index.php">Home</a></li>
+          	 <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Funding Settings <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+              <?=$gen->showCurrencyNav();?>
+                
+              </ul>
+            </li>
+          
+                
+        
+        
+       
+          
             <? if($act->sts == 9 || $act->sts == 8){ ?>
             <li class="<?=($pages->activePage == 'addAct' ? 'active' : '');?>"><a href="index.php?page=addAct">Add Account</a></li>
             <? } ?>

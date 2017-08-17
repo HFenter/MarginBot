@@ -14,7 +14,7 @@ $config['db']['dbpass'] = '';
 $config['db']['prefix'] = '';
 
 //Local Admin Email //
-$config['admin_email'] = 'support@fuckedgox.com';
+$config['admin_email'] = 'marginbot@therovegroup.com';
 
 // Current Fees Charged by BFX for Margin Swaps (15% as of Nov. 2014)
 $config['curFeesBFX'] = 15;
