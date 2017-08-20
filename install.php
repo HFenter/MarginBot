@@ -94,6 +94,22 @@ if($_REQUEST['doInstall']==1){
 			if ( !$mysqli->query($pairsTableSQL) ){
 				 $warning[] = "Table creation failed: (" . $mysqli->errno . ") " . $mysqli->error;
 				}
+			else{
+				//prefill pairs table
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('1', 'USD', 'US Dollars', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('2', 'BTC', 'Bitcoin', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('3', 'IOT', 'Iota', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('4', 'ETH', 'Ethereum', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('5', 'OMG', 'OmiseGO', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('6', 'BCH', 'Bcash', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('7', 'EOS', 'EOS', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('8', 'ETC', 'Ethereum Classic', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('9', 'DSH', 'Dash', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('10', 'XMR', 'Monero', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('11', 'ZEC', 'Zcash', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('12', 'XRP', 'Ripple', '1')");
+				
+			}
 			
 			if(count($warning)==0){
 				// tables seemed to create ok, lets write the config file //
