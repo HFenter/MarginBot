@@ -11,7 +11,7 @@ class General {
 		global $db, $config;
 		$this->db = $db;
 		
-		if(!stristr($_SERVER["SCRIPT_URL"],'update.php') && !stristr($_SERVER["SCRIPT_URL"],'install.php') ){
+		if(!stristr($_SERVER['PHP_SELF'],'update.php') && !stristr($_SERVER['PHP_SELF'],'install.php') ){
 			$exists = $this->db->query("SHOW TABLES like '".$config['db']['prefix']."CurPairs'");
 			if(count($exists)==0){
 				$this->doRedirect('update.php');
