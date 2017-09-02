@@ -289,6 +289,11 @@ class Bitfinex{
 				}
 			}
 		}
+		// wait 15 seconds so exchange can update balence
+		sleep(15);
+		// how much we got?
+		// since we just canceled some loans we need to update this
+		$this->bitfinex_getDepositBalance();
 	}
 	
 	
@@ -298,10 +303,6 @@ class Bitfinex{
 		//  then divide it by the $spreadlend account setting to get
 		//  a lend per amount.  If theres a highhold, we subtract
 		//  that from the total and set it aside as a special lend
-		
-		// how much we got?
-		// since we just canceled some loans we need to update this
-		$this->bitfinex_getDepositBalance();
 		
 		$ca = $this->cryptoAvailable[$cur];
 		// if its less than $50, we have nothing to do, since thats the minimum loan //
