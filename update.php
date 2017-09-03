@@ -170,8 +170,8 @@ if($_REQUEST['doUpdate']==2){
 		}
 	$updateWorked = $db->iquery("ALTER TABLE `".$config['db']['prefix']."Tracking`
 									ADD COLUMN `trans_cur`  varchar(10) NULL AFTER `user_id`,
-									MODIFY COLUMN `dep_balance`  decimal(12,8) NULL DEFAULT NULL AFTER `date`,
-									MODIFY COLUMN `swap_payment`  decimal(12,8) NULL DEFAULT NULL AFTER `dep_balance`,
+									MODIFY COLUMN `dep_balance`  decimal(18,8) NULL DEFAULT NULL AFTER `date`,
+									MODIFY COLUMN `swap_payment`  decimal(18,8) NULL DEFAULT NULL AFTER `dep_balance`,
 									DROP INDEX `uniquieKeys` ,
 									ADD UNIQUE INDEX `uniquieKeys` (`user_id`, `trans_id`, `trans_cur`) USING BTREE");
 	if ( $updateWorked['num']<=0 ){

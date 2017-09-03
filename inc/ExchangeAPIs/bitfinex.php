@@ -226,6 +226,13 @@ class Bitfinex{
 		//  this will loop through all currency types
 		$this->bitfinex_cancelPendingLoans();
 		
+		
+		// how much we got?
+		// since we just canceled some loans we need to update this
+		sleep(5);
+		$this->bitfinex_getDepositBalance();
+		
+		
 		//loop for each cryptotype they have available
 		foreach($this->cryptoAvailable as $key=>$ca){
 			// are they trying to extract some currency?
@@ -299,10 +306,7 @@ class Bitfinex{
 		//  a lend per amount.  If theres a highhold, we subtract
 		//  that from the total and set it aside as a special lend
 		
-		// how much we got?
-		// since we just canceled some loans we need to update this
-		$this->bitfinex_getDepositBalance();
-		
+				
 		$ca = $this->cryptoAvailable[$cur];
 		// if its less than $50, we have nothing to do, since thats the minimum loan //
 		if($ca >= $minForLend ){
