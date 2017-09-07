@@ -212,10 +212,10 @@ class Accounts{
 		
 		
 		echo '
-		<tr class="bigrow '.( ($this->sts == 2 || $this->sts == 8 ) ? 'danger':'').'" id="userRow_'.$this->userid.'">
+		<tr class="bigrow '.( ($this->bfx->actSettings['status'][$thisCurrency]==2 ) ? 'danger':'').'" id="userRow_'.$this->userid.'">
 				<td rowspan="2" class="mid">'.$this->userid.'</td>
 				<td rowspan="2" class="mid">'.$this->name.'<br> 
-					( <a href="#" uid="'.$this->userid.'" class="doPauseAct" id="doPauseAct_'.$this->userid.'">'.( ($this->sts == 2 || $this->sts == 8 ) ? 'Unpause':'Pause').' Lending</a> )<br>
+					( <a href="#" data-uid="'.$this->userid.'" class="doPauseCur" data-cur="'.$thisCurrency.'" id="doPauseCur_'.$this->userid.'">'.( ($this->sts == 2 || $this->sts == 8 ) ? 'Unpause':'Pause').' Lending</a> )<br>
 					( <a class="collapsed" data-toggle="collapse" href="#collapseListExtract'.$this->userid.'" aria-expanded="false" aria-controls="collapseListExtract'.$this->userid.'">Extract</a> )
 				</td>
 				<td class="mid">'.$gen->cryptoFormat($this->bfx->cryptoBalance[$thisCurrency], 8, $thisCurrency).'</td>

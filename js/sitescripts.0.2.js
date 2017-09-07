@@ -25,6 +25,25 @@
 				
 			});
 		});
+		// pause / unpause lending on account/currency //
+		$(".doPauseCur").click(function(){
+			var userId = $(this).data("uid");
+			var cur = $(this).data("cur");
+			//alert("Posting: " + userId);
+			$.post("ajax/aj.php", { uid: userId, doPauseCur: 1, cur: cur }, function(data){
+				if(data == '1'){
+					$("#userRow_"+userId).toggleClass('danger');
+					var curState = $("#doPauseCur_"+userId).html();
+					if( curState == 'Unpause Lending'){
+						$("#doPauseCur_"+userId).html('Pause Lending');
+					}
+					else{
+						$("#doPauseCur_"+userId).html('Unpause Lending');
+					}
+				}
+				
+			});
+		});
 
 		// extract max button //
 	

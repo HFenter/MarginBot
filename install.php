@@ -108,6 +108,7 @@ if($_REQUEST['doInstall']==1){
 				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('10', 'XMR', 'Monero', '1')");
 				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('11', 'ZEC', 'Zcash', '1')");
 				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('12', 'XRP', 'Ripple', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('13', 'LTC', 'Litecoin', '1')");
 				
 			}
 			

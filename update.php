@@ -148,7 +148,8 @@ if($_REQUEST['doUpdate']==2){
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('9', 'DSH', 'Dash', '1')");
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('10', 'XMR', 'Monero', '1')");
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('11', 'ZEC', 'Zcash', '1')");
-	$updateWorked = $db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('12', 'XRP', 'Ripple', '1')");
+	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('12', 'XRP', 'Ripple', '1')");
+	$updateWorked = $db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('13', 'LTC', 'Litecoin', '1')");
 
 	if ( $updateWorked['num']<=0 ){
 		 $warning[] = "Table creation failed: (" . $db->database_link->errno . ") " . $db->database_link->error;
@@ -160,6 +161,7 @@ if($_REQUEST['doUpdate']==2){
 									ADD COLUMN `curType`  varchar(10) NULL AFTER `id`,
 									ADD COLUMN `extractAmt`  varchar(12) NULL AFTER `highholdamt`,
 									ADD COLUMN `userid`  smallint(4) NULL AFTER `id`,
+									ADD COLUMN `status`  tinyint(1) NULL DEFAULT 1 AFTER `extractAmt`,
 									ADD UNIQUE INDEX `unqType` (`userid`, `curType`)");
 	if ( $updateWorked['num']<=0 ){
 		 $warning[] = "Table updates failed: (" . $db->database_link->errno . ") " . $db->database_link->error;
@@ -183,44 +185,75 @@ if($_REQUEST['doUpdate']==2){
 		}
 	
 	// Finally, show them it worked, link them to the landing page.
+	$gen->showWarnings($warning);
+	$gen->showAlerts($alert);
 	
-	
-		
-		
-		$gen->showWarnings($warning);
-		$gen->showAlerts($alert);
-		
-		if(count($warning)==0){
-			// tables seemed to create ok, lets write the config file //
-			echo '
-				<div class="panel panel-default">
-					<div class="panel-heading">Update to '.$config['app_name'].' '.$config['app_version'].'.'.$config['app_version_minor'].' Complete</div>
-					<div class="panel-body table-responsive">
-						Everything seems to have gone well.  The update is complete and you are ready to start lending margin!<br><br>
-						<a href="index.php" class="btn btn-success btn-lg active" role="button">Lets Get Started</a>
-					</div>
+	if(count($warning)==0){
+		// tables seemed to create ok, lets write the config file //
+		echo '
+			<div class="panel panel-default">
+				<div class="panel-heading">Update to '.$config['app_name'].' '.$config['app_version'].'.'.$config['app_version_minor'].' Complete</div>
+				<div class="panel-body table-responsive">
+					Everything seems to have gone well.  The update is complete and you are ready to start lending margin!<br><br>
+					<a href="index.php" class="btn btn-success btn-lg active" role="button">Lets Get Started</a>
 				</div>
-				';	
-		}
-		else{
-			
-			// Something failed.  Warn them, then let them try again //
-			echo '
-				<div class="panel panel-default">
-					<div class="panel-heading">Update Failed</div>
-					<div class="panel-body table-responsive">
-						Something didn\'t go right.  Feel free to try again, or contact us on the <a href="'.$config['app_support_url'].'">forums</a>, or by <a href="mailto:'.$config['app_support_email'].'">email</a> to get some help.<br><br>
-						<a href="update.php?doUpdate=2" class="btn btn-warning btn-lg active" role="button">Try The Update Again...</a>
-					</div>
+			</div>
+			';	
+	}
+	else{
+		
+		// Something failed.  Warn them, then let them try again //
+		echo '
+			<div class="panel panel-default">
+				<div class="panel-heading">Update Failed</div>
+				<div class="panel-body table-responsive">
+					Something didn\'t go right.  Feel free to try again, or contact us on the <a href="'.$config['app_support_url'].'">forums</a>, or by <a href="mailto:'.$config['app_support_email'].'">email</a> to get some help.<br><br>
+					<a href="update.php?doUpdate=2" class="btn btn-warning btn-lg active" role="button">Try The Update Again...</a>
 				</div>
-				';	
-		}
+			</div>
+			';	
+	}
 
 }
 
 
 
-
+else if($_REQUEST['doUpdate']==3){
+	$updateWorked = $db->iquery("ALTER TABLE `".$config['db']['prefix']."Vars` ADD COLUMN `status` tinyint(1) NULL DEFAULT 1 AFTER `extractAmt`");
+	if ( $updateWorked['num']<=0 ){
+		 $warning[] = "Table updates failed: (" . $db->database_link->errno . ") " . $db->database_link->error;
+		}
+	
+	$gen->showWarnings($warning);
+	$gen->showAlerts($alert);
+		
+	if(count($warning)==0){
+		// tables seemed to create ok, lets write the config file //
+		echo '
+			<div class="panel panel-default">
+				<div class="panel-heading">Update to '.$config['app_name'].' '.$config['app_version'].'.'.$config['app_version_minor'].' Complete</div>
+				<div class="panel-body table-responsive">
+					Everything seems to have gone well.  The update is complete and you are ready to start lending margin!<br><br>
+					<a href="index.php" class="btn btn-success btn-lg active" role="button">Lets Get Started</a>
+				</div>
+			</div>
+			';	
+	}
+	else{
+		
+		// Something failed.  Warn them, then let them try again //
+		echo '
+			<div class="panel panel-default">
+				<div class="panel-heading">Update Failed</div>
+				<div class="panel-body table-responsive">
+					Something didn\'t go right.  Feel free to try again, or contact us on the <a href="'.$config['app_support_url'].'">forums</a>, or by <a href="mailto:'.$config['app_support_email'].'">email</a> to get some help.<br><br>
+					<a href="update.php?doUpdate=2" class="btn btn-warning btn-lg active" role="button">Try The Update Again...</a>
+				</div>
+			</div>
+			';	
+	}
+	
+}
 
 
 /*
@@ -233,6 +266,14 @@ else if($_REQUEST['doUpdate']<=1){
 	$gen->showWarnings($warning);
 	$gen->showAlerts($alert);
 	
+	if($_REQUEST['up']==1){
+		$doUpdate = 2;
+	}
+	else if($_REQUEST['up']==2){
+		$doUpdate = 3;
+	}
+	
+	
 	echo '
 		
 			<div class="panel panel-default">
@@ -241,7 +282,7 @@ else if($_REQUEST['doUpdate']<=1){
 					It looks like you need to update your '.$config['app_name'].' install to version '.$config['app_version'].'.'.$config['app_version_minor'].' .  Lets do so now!<br><br>
 					This will first create backup duplicates of your database tables, then alter them to support the new features in this version.<br>
 					It is always a good idea to make your own backup of everything before you do this.<br><br>
-					<a href="update.php?doUpdate=2" class="btn btn-success btn-lg active" role="button">Start The Update!</a>
+					<a href="update.php?doUpdate='.$doUpdate.'" class="btn btn-success btn-lg active" role="button">Start The Update!</a>
 				</div>
 			</div>
 			';

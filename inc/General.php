@@ -14,18 +14,21 @@ class General {
 		if(!stristr($_SERVER['PHP_SELF'],'update.php') && !stristr($_SERVER['PHP_SELF'],'install.php') ){
 			$exists = $this->db->query("SHOW TABLES like '".$config['db']['prefix']."CurPairs'");
 			if(count($exists)==0){
-				$this->doRedirect('update.php');
+				$this->doRedirect('update.php?up=1');
 			}
 			else{
+				$exists = $this->db->query("SHOW COLUMNS FROM `".$config['db']['prefix']."Vars` LIKE 'status'");
+				if(count($exists)==0){
+					$this->doRedirect('update.php?up=2');
+				}
+				
 				$sql = "SELECT * from `".$config['db']['prefix']."CurPairs` WHERE status = '1'";
 				$crypto = $this->db->query($sql);
 				if(count($crpto)<=0){
-					
-				}
-				
-				foreach($crypto as $c){
-					// make it into a pretty array
-					$this->cryptoPairs[$c['curSym']] = $c;
+					foreach($crypto as $c){
+						// make it into a pretty array
+						$this->cryptoPairs[$c['curSym']] = $c;
+					}
 				}
 			}
 		}

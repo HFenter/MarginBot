@@ -235,31 +235,33 @@ class Bitfinex{
 		
 		//loop for each cryptotype they have available
 		foreach($this->cryptoAvailable as $key=>$ca){
-			// are they trying to extract some currency?
-			//need to load the current price for this currency so we can figure out the minimum lend (BFX currently requires a minimum loan of $50 USD equiv)
-			if($key != 'USD'){
-				$this->bitfinex_getCurPrice($key);
-				if($this->cryptoCurPrice[$key] > 0){
-					$minForLend = round((50 / $this->cryptoCurPrice[$key]),5);
+			if($this->actSettings['status'][$key]!=2){
+				// are they trying to extract some currency?
+				//need to load the current price for this currency so we can figure out the minimum lend (BFX currently requires a minimum loan of $50 USD equiv)
+				if($key != 'USD'){
+					$this->bitfinex_getCurPrice($key);
+					if($this->cryptoCurPrice[$key] > 0){
+						$minForLend = round((50 / $this->cryptoCurPrice[$key]),5);
+					}
+					else{
+						$minForLend = 50;
+					}
 				}
 				else{
 					$minForLend = 50;
 				}
-			}
-			else{
-				$minForLend = 50;
-			}
-				
-			if($ca > $minForLend && $this->actSettings['extractAmt'][$key] != -1 && $ca > $this->actSettings['extractAmt'][$key]){
-				echo "\n<br>Running for ".$key." - ".$ca;
-				//  Step 2 - Update the BFX Lendbook for current rates
-				$this->bitfinex_getLendBook(500,$key);
-				
-				//  Step 3 - Figure out my Loan Splits and Rates
-				$doLends = $this->bitfinex_getMyLendRates($key, $minForLend);
-				//print_r($doLends);
-				//  Step 4 & 5 - Create the Loan offers
-				$this->bitfinex_createLoanOffers($doLends, $key);
+					
+				if($ca > $minForLend && $this->actSettings['extractAmt'][$key] != -1 && $ca > $this->actSettings['extractAmt'][$key]){
+					echo "\n<br>Running for ".$key." - ".$ca;
+					//  Step 2 - Update the BFX Lendbook for current rates
+					$this->bitfinex_getLendBook(500,$key);
+					
+					//  Step 3 - Figure out my Loan Splits and Rates
+					$doLends = $this->bitfinex_getMyLendRates($key, $minForLend);
+					//print_r($doLends);
+					//  Step 4 & 5 - Create the Loan offers
+					$this->bitfinex_createLoanOffers($doLends, $key);
+				}
 			}
 		}
 		echo "\n<Br>Completed";
@@ -466,6 +468,7 @@ class Bitfinex{
 			$this->actSettings['highholdlimit'][strtoupper($u['curType'])] 	= $u['highholdlimit'];
 			$this->actSettings['highholdamt'][strtoupper($u['curType'])] 	= $u['highholdamt'];
 			$this->actSettings['extractAmt'][strtoupper($u['curType'])] 	= $u['extractAmt'];
+			$this->actSettings['status'][strtoupper($u['curType'])] 		= $u['status'];
 			}
 	}
 	

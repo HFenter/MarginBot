@@ -29,7 +29,21 @@ if($_REQUEST['doPause']==1){
 	}
 	
 }
+if($_REQUEST['doPauseCur']==1){
+	// flip the pause/unpause setting on an account //
+	$userP = $db->iquery("UPDATE `".$config['db']['prefix']."Vars` set status = (CASE
+			WHEN status = 1 THEN 2
+			WHEN status = 2 THEN 1
+		END)
+	WHERE userid = '".$db->escapeStr($_REQUEST['uid'])."' and curType='".$db->escapeStr($_REQUEST['cur'])."' LIMIT 1");
+	if($userP['num']>0){
+		echo '1';
+	}
+	else{
+		echo '0';
+	}
 	
+}
 	
 
 
