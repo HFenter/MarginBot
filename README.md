@@ -43,9 +43,14 @@ If you don't have a bitfinex account, please consider using my [affiliate code](
 
 [https://www.bitfinex.com/?refcode=vsAnxuo5bM](https://www.bitfinex.com/?refcode=vsAnxuo5bM).
 
+## Project Development Thread on Bitointalk
+
+[MarginBot - A Bitfinex Margin Lending Management Bot](https://bitcointalk.org/index.php?topic=865250.0)
+
 ## Donations
 Developing this software, and testing the various strategies for lending that led to its development have taken significant time and effort.  If you find this software useful, please send a small donation our way.  All donations support the continued development of this software, and help to cover my distribution and support costs.
 
 You can send donations to:
 
-Bitcoin: 17x2SsY8bpZVC4QH8Va3Qz7HggaDshhjjr
+Bitcoin: 1A3y1xDXtyZySmPZySbpz7PPog4Vsyqig1
+![Donate](http://therovegroup.com/MarginBotDonations.png)
