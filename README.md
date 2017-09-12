@@ -53,4 +53,5 @@ Developing this software, and testing the various strategies for lending that le
 You can send donations to:
 
 Bitcoin: 1A3y1xDXtyZySmPZySbpz7PPog4Vsyqig1
+
 ![Donate](http://therovegroup.com/MarginBotDonations.png)
