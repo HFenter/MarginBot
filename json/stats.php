@@ -30,7 +30,7 @@ if($_REQUEST['global']==1 && ( $_SESSION['user_lvl']==8 || $_SESSION['user_lvl']
 	$act->getAllAccounts();
 	foreach($accounts as $a){
 		/* Get a Full Array of Stats */	
-		$dataArray[$a->userid] = $a->getStatsArray();
+		$dataArray[$a->userid] = $a->getStatsArray(0,$_REQUEST['cur']);
 	}
 	foreach($dataArray as $da){
 		foreach($da as $dd){
@@ -51,7 +51,7 @@ else if($_REQUEST['userid']!=0 && ( $_SESSION['user_lvl']==8 || $_SESSION['user_
 	$act2 = new Accounts($_REQUEST['userid']);
 	$accounts[$_REQUEST['userid']] = $act2;
 	/* Get a Full Array of Stats */	
-	$thisArray = $accounts[$_REQUEST['userid']]->getStatsArray();
+	$thisArray = $accounts[$_REQUEST['userid']]->getStatsArray(0,$_REQUEST['cur']);
 	
 	foreach($thisArray as $ta){
 		$tm = (string)(strtotime($ta['date'])).'000';
@@ -63,7 +63,7 @@ else if($_SESSION['userid']){
 	// must not be an admin, can only see their own stats
 	$accounts[$_SESSION['userid']] = $act;
 	/* Get a Full Array of Stats */	
-	$thisArray = $accounts[$_SESSION['userid']]->getStatsArray();
+	$thisArray = $accounts[$_SESSION['userid']]->getStatsArray(0,$_REQUEST['cur']);
 	
 	foreach($thisArray as $ta){
 		$tm = (string)(strtotime($ta['date'])).'000';

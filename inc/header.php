@@ -2,7 +2,7 @@
 // apparently a lot of people leave notice reporting on when installing PHP,
 // lets not do that.
 error_reporting(E_ALL & ~E_NOTICE);
-
+header( 'Content-type: text/html; charset=utf-8' );
 
 // file configs //
 require_once("config.php");
@@ -164,9 +164,16 @@ $gen->checkCronStatus();
             <? if($act->sts == 9 || $act->sts == 8){ ?>
             <li class="<?=($pages->activePage == 'addAct' ? 'active' : '');?>"><a href="index.php?page=addAct">Add Account</a></li>
             <? } ?>
-            <li class="<?=($pages->activePage == 'viewReturns' ? 'active' : '');?>"><a href="index.php?page=viewReturns">View Overall Returns</a></li>
-
-
+            
+            <li class="dropdown <?=($pages->activePage == 'viewReturns' || $pages->activePage == 'grabHistory' ? 'active' : '');?>">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">View Overall Returns <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+              	<?=$gen->showReturnsNav();?>
+                <li><a href="index.php?page=grabHistory">Grab Return History From Bitfinex</a></li>
+              </ul>
+            </li>
+            
+           
             <li style="padding:8px 30px 0px 30px;">
             	<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#signUpModal">
                   Sign Up For Bitfinex 10% Off Fees

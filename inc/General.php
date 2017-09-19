@@ -570,7 +570,20 @@ class General {
 		}
 		return $return;
 	}
-	
+	function showReturnsNav(){
+		// bitfinex API is very inconsistant with upper and lower case
+		foreach($this->cryptoPairs as $c){
+			$return .= '<li><a href="index.php?page=viewReturns&funding='.$c['curSym'].'">'.$c['curName'].'</a></li>
+			';
+		}
+		return $return;
+	}
+	function showCurSelect($default = 'USD'){
+		foreach($this->cryptoPairs as $c){
+			$return .= '<option value="'.$c['curSym'].'" '.($default == $c['curSym'] ? 'SELECTED' :'').'>'.$c['curName'].'</option>';
+		}
+		return $return;
+	}
 	function symbol2name($sym){
 		// bitfinex API is very inconsistant with upper and lower case
 		$sym = strtoupper($sym);

@@ -218,8 +218,8 @@ class Accounts{
 					( <a href="#" data-uid="'.$this->userid.'" class="doPauseCur" data-cur="'.$thisCurrency.'" id="doPauseCur_'.$this->userid.'">'.( ($this->sts == 2 || $this->sts == 8 ) ? 'Unpause':'Pause').' Lending</a> )<br>
 					( <a class="collapsed" data-toggle="collapse" href="#collapseListExtract'.$this->userid.'" aria-expanded="false" aria-controls="collapseListExtract'.$this->userid.'">Extract</a> )
 				</td>
-				<td class="mid">'.$gen->cryptoFormat($this->bfx->cryptoBalance[$thisCurrency], 8, $thisCurrency).'</td>
-				<td class="mid">'.$gen->cryptoFormat($this->bfx->cryptoAvailable[$thisCurrency], 8, $thisCurrency).'</td>
+				<td class="mid">'.$gen->cryptoFormat($this->bfx->cryptoBalance[$thisCurrency], 8, $thisCurrency).' '.($thisCurrency != 'USD' ? '<br><small>('.$gen->cryptoFormat( ($this->bfx->cryptoBalance[$thisCurrency] * $this->bfx->bitfinex_getCurPrice($thisCurrency) ) , 8, 'USD').')</small>':'').'</td>
+				<td class="mid">'.$gen->cryptoFormat($this->bfx->cryptoAvailable[$thisCurrency], 8, $thisCurrency).' '.($thisCurrency != 'USD' ? '<br><small>('.$gen->cryptoFormat( ($this->bfx->cryptoAvailable[$thisCurrency] * $this->bfx->bitfinex_getCurPrice($thisCurrency) ) , 8, 'USD').')</small>':'').'</td>
 				<td class="mid">'.$gen->cryptoFormat($this->bfx->cryptoPendingVal[$thisCurrency], 8, $thisCurrency).' <span class="badge">'.number_format($this->bfx->cryptoPendingOffers[$thisCurrency]).'</span>
 					<br>('.$gen->percentFormat($this->bfx->cryptoPendingAvg[$thisCurrency]).')
 					<br>(<a class="collapsed" data-toggle="collapse" href="#collapseListPending'.$this->userid.'" aria-expanded="false" aria-controls="collapseListPending'.$this->userid.'">Show</a>)
@@ -228,11 +228,11 @@ class Accounts{
 					<br>('.$gen->percentFormat($this->bfx->cryptoCurrentLendAvg[$thisCurrency]).')
 					<br>(<a class="collapsed" data-toggle="collapse" href="#collapseListOutstanding'.$this->userid.'" aria-expanded="false" aria-controls="collapseListOutstanding'.$this->userid.'">Show</a>)
 				</td>
-				<td class="mid">'.$gen->cryptoFormat($estReturn, 8, $thisCurrency).'</td>
+				<td class="mid">'.$gen->cryptoFormat($estReturn, 8, $thisCurrency).' '.($thisCurrency != 'USD' ? '<br><small>'.$gen->cryptoFormat( ($estReturn * $this->bfx->bitfinex_getCurPrice($thisCurrency) ) , 8, 'USD').'</small>':'').'</td>
 				
-				<td class="mid">'.$gen->cryptoFormat($yesterdayRet['intTotal'], 8, $thisCurrency).'<br>('.$gen->percentFormat($yesterdayRet['avgInt']).')</td>
-				<td class="mid">'.$gen->cryptoFormat($thirtydayRet['intTotal'], 8, $thisCurrency).'<br>('.$gen->percentFormat($thirtydayRet['avgInt']).')</td>
-				<td class="mid">'.$gen->cryptoFormat($fullRet['intTotal'], 8, $thisCurrency).'<br>('.$gen->percentFormat($fullRet['avgInt']).')</td>
+				<td class="mid">'.$gen->cryptoFormat($yesterdayRet['intTotal'], 8, $thisCurrency).' '.($thisCurrency != 'USD' ? '<br>('.$gen->percentFormat($yesterdayRet['avgInt']).')<br><small>('.$gen->cryptoFormat( ($yesterdayRet['intTotal'] * $this->bfx->bitfinex_getCurPrice($thisCurrency) ) , 8, 'USD').')</small>':'').'</td>
+				<td class="mid">'.$gen->cryptoFormat($thirtydayRet['intTotal'], 8, $thisCurrency).' '.($thisCurrency != 'USD' ? '<br>('.$gen->percentFormat($thirtydayRet['avgInt']).')<br><small>('.$gen->cryptoFormat( ($thirtydayRet['intTotal'] * $this->bfx->bitfinex_getCurPrice($thisCurrency) ) , 8, 'USD').')</small>':'').'</td>
+				<td class="mid">'.$gen->cryptoFormat($fullRet['intTotal'], 8, $thisCurrency).' '.($thisCurrency != 'USD' ? '<br>('.$gen->percentFormat($fullRet['avgInt']).')<br><small>('.$gen->cryptoFormat( ($fullRet['intTotal'] * $this->bfx->bitfinex_getCurPrice($thisCurrency) ) , 8, 'USD').')</small>':'').'</td>
 			</tr>
 			<tr style="border-bottom: 2px solid #ddd;">
 				<td colspan="8" style="padding: 0px;margin: 0px;">
@@ -625,7 +625,7 @@ class Accounts{
 		if($uid == 0){
 			$uid = $this->userid;
 		}
-		$averageReturn = $this->db->query("SELECT date, swap_payment, average_return, dep_balance FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($uid)."' AND trans_cur = '".$this->db->escapeStr($cur)."' ");
+		$averageReturn = $this->db->query("SELECT date, swap_payment, average_return, dep_balance FROM `".$config['db']['prefix']."Tracking` where user_id = '".$this->db->escapeStr($uid)."' AND trans_cur = '".$this->db->escapeStr($cur)."'  ORDER BY trans_id ASC ");
 		return $averageReturn;		
 	}
 	

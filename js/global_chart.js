@@ -1,9 +1,13 @@
 // Chart Scripts for the stats page
 
 $(function () {
-	 $.getJSON('json/stats.php?global=1', function (data) {
+	var curDecimals = 2;
+	if(currency != 'USD'){
+		curDecimals = 8;
+	}
+	 $.getJSON('json/stats.php?global=1&cur='+currency, function (data) {
 		 if(data == null){
-				$('#chart_GlobalDailyReturns').html('<br><h4>No Data</h4><p>There is currently no history data in your database.  Please make sure the hourly cron is running correctly, then wait at least one hour for historical data to load from bitfinex.');
+				$('#chart_GlobalDailyReturns').html('<br><h4>No Data</h4><p>There is currently no history data in your database.  Please make sure the hourly cron is running correctly, then wait at least one hour for historical data to load from bitfinex.<br><br><h3><a href="index.php?page=grabHistory&currencyType='+currency+'">To Load Historical Data directly from Bitfinex, check here.</h3>');
 			}
 		else{
 			var dataLength = data.length,
@@ -81,11 +85,11 @@ $(function () {
 					}]
 				},
 				title: {
-					text: 'Global Daily Margin Returns'
+					text: 'Global '+currency+' Daily Margin Returns'
 				},
 				yAxis: [{ // Primary yAxis
 					title: {
-						text: 'Daily Return $USD',
+						text: 'Daily Return '+currency,
 						x: -22,
 						y: 0,
 						style: {
@@ -93,7 +97,7 @@ $(function () {
 						}
 					},
 					labels: {
-						format: '${value}',
+						format: '{value} '+currency,
 						align:'left',
 						x: -25,
 						y: 0,
@@ -134,7 +138,7 @@ $(function () {
 						}
 					},
 					labels: {
-						format: '${value}',
+						format: '{value} '+currency,
 						align:'right',
 						x: 5,
 						y: 11,
@@ -151,11 +155,11 @@ $(function () {
 				series: [
 					{
 					type: 'areaspline',
-					name: '$USD Balance',
+					name: currency+' Balance',
 					data: balReturn,
 					yAxis:2,
 					tooltip: {
-						valueDecimals: 2
+						valueDecimals: curDecimals
 					},
 					dataGrouping:{
 								enabled:true,
@@ -177,10 +181,10 @@ $(function () {
 					}
 				},{
 					type: 'column',
-					name: '$USD Return',
+					name: currency+' Return',
 					data: amtReturn,
 					tooltip: {
-						valueDecimals: 2
+						valueDecimals: curDecimals
 					},
 					color: {
 						linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },

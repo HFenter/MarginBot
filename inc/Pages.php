@@ -22,6 +22,9 @@ class Pages {
 			case 'viewReturns':
 				$this->title = 'View Detailed Returns';
 				break;
+			case 'grabHistory':
+				$this->title = 'Grab Past History For Tracking';
+				break;
 			case 'home':
 			default:
 				$this->title = 'Dashboard';
@@ -43,6 +46,9 @@ class Pages {
 			case 'viewReturns':
 				$this->showViewReturns();
 				break;
+			case 'grabHistory':
+				$this->showGrabHistory();
+				break;
 			case 'home':
 			default:
 				$this->activePage='home';
@@ -56,10 +62,10 @@ class Pages {
 		if($_REQUEST['curType']!= ''){$_REQUEST['funding'] = $_REQUEST['curType'];}
 		// default to USD
 		if($_REQUEST['funding'] == ''){$_REQUEST['funding'] = 'USD';}
-		
+		$fisrtAct = reset($accounts);
 		echo '
 		<div class="panel panel-default">
-		  <div class="panel-heading">Current '.$gen->symbol2name($_REQUEST['funding']).' Bitfinex Accounts</div>
+		  <div class="panel-heading">Current '.$gen->symbol2name($_REQUEST['funding']).' Bitfinex Accounts '.($_REQUEST['funding']!= 'USD' ? ' ( Current Price '.$gen->cryptoFormat($fisrtAct->bfx->bitfinex_getCurPrice($_REQUEST['funding'] ) , 8, 'USD').' ) ':'').'</div>		  
 		  <div class="panel-body table-responsive">
 			<table class="table table-striped table-bordered">
 				<thead>
@@ -231,7 +237,11 @@ class Pages {
 	
 	function showViewReturns(){
 		global $accounts;
-		
+		echo "
+				<script>
+					var currency = '".$_REQUEST['funding']."';
+				</script>
+			";
 		if($_SESSION['user_lvl']==8 || $_SESSION['user_lvl']==9){
 			// global stats for all accounts //
 			echo "
@@ -250,18 +260,15 @@ class Pages {
 						<div id='chart_UserDailyReturns_".$a->userid."' class='chartArea'><img src='img/ajax-loader.gif' class='loader'></div>
 					</div>
 						";
-					}
-					echo "
-					<script>
-						var userIds = [".implode(",", $userIds)."];
-						var userNames = ['".implode("','", $userNames)."'];
-					</script>
-					<script type='text/javascript' src='js/user_chart.js'></script>
-					
-					";
+				}
+				echo "
+				<script>
+					var userIds = [".implode(",", $userIds)."];
+					var userNames = ['".implode("','", $userNames)."'];
+				</script>
+				<script type='text/javascript' src='js/user_chart.js'></script>
+				";
 			}
-
-		
 		}
 		// Individual Stats //
 		else{
@@ -269,7 +276,7 @@ class Pages {
 				<div class='bigChart'>
 					<div id='chart_UserDailyReturns_".$_SESSION['userid']."' class='chartArea'><img src='img/ajax-loader.gif' class='loader'></div>
 				</div>
-                <script>
+				<script>
 					var userIds = [".$_SESSION['userid']."];
 					var userNames = ['".$_SESSION['username']."'];
 				</script>
@@ -278,7 +285,69 @@ class Pages {
 				";
 		}
 	}
-
+	
+	function showGrabHistory(){
+		global $gen, $act;
+		if($_REQUEST['doUpdateHistory']==1){
+			// run the update
+			echo '
+			<div class="panel panel-default">
+				<div class="panel-heading">Updating Account History From '.date('M jS, Y',strtotime($_REQUEST['startDate'])).'</div>
+				<div class="panel-body table-responsive">';
+				$act->bfx->bitfinex_updateHistory(0, strtotime($_REQUEST['startDate']), $_REQUEST['currencyType'],true);
+				
+				echo '
+				</div>
+			</div>';
+				
+				
+		}
+		if($_REQUEST['doUpdateHistory']==0){
+			echo '
+			<form action="index.php" method="post" autocomplete="off" >
+			<input type="hidden" name="doUpdateHistory" value="1">
+			<input type="hidden" name="page" value="grabHistory">
+			<div class="panel panel-default">
+				<div class="panel-heading">Update Account History</div>
+				<div class="panel-body table-responsive">
+					<p>If your Bitfinex account is older than the time you\'ve been using MarginBot, and you\'d like to import the older history for tracking and stats reasons, you can do so here. </p> 
+					<p><em><strong>Note</strong></em>: selecting a large block of time here can take quite a while to run, and depending on your server settings, it may time out.  If that happens, take note of the last day that ran on the next screen, then run this function again, starting on that day.</p>
+					<table class="table table-striped table-bordered">
+						<thead>
+						<tr>
+							<th class="mid">
+								Currency To Import
+							</th>
+							<th class="mid">
+								Start Date
+							</th>
+						</tr>
+						</thead>
+						<tr>
+							<td class="mid">
+								<select name="currencyType" class="form-control" >
+									'.$gen->showCurSelect($_REQUEST['currencyType']).'
+								</select>
+							</td>
+							<td class="mid">
+								<input type="text" name="startDate" placeholder="Format: YYYY-MM-DD" value="'.$_REQUEST['startDate'].'" class="form-control" >
+								
+							</td>
+						</tr>
+						<tr>					
+							<td class="mid" colspan="4">
+								<button class="btn btn-lg btn-primary btn-block" type="submit">Import History</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			</form>';
+		}
+		
+		
+		
+	}
 
 	function showLoginPage(){
 	

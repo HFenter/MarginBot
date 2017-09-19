@@ -147,11 +147,19 @@ class Bitfinex{
 	
 	
 	/* Grab performace history and store it in a local database */
-	function bitfinex_updateHistory($numDays=10,  $sinceLast=0){
+	function bitfinex_updateHistory($numDays=10,  $sinceLast=0, $curOverride = '',$showDetails = false){
 		global $config;
-		// lets try to grab everything, even crypto they don't have balance for (just in case there was some yesterday)
-		$sql = "SELECT * from `".$config['db']['prefix']."CurPairs` WHERE status = '1'";
-		$cryptoPairs = $this->db->query($sql);
+		set_time_limit(180);
+		if($curOverride!=''){
+			$cryptoPairs[0]['curSym'] = $curOverride;
+			
+		}
+		else{
+			// lets try to grab everything, even crypto they don't have balance for (just in case there was some yesterday)
+			$sql = "SELECT * from `".$config['db']['prefix']."CurPairs` WHERE status = '1'";
+			$cryptoPairs = $this->db->query($sql);
+		}
+		$splitDays = 25;
 		foreach($cryptoPairs as $c){
 		
 			// no start date set, so grab the last timestamp from the db //
@@ -164,22 +172,55 @@ class Bitfinex{
 					$sinceLast = strtotime("-10 day");
 				}
 			}
-			$ledgerDetails = array('currency' => $c['curSym'], 'since' => (string)$sinceLast, 'until' => (string)($sinceLast + (86400 * $numDays)), 'wallet' => 'deposit');
-			$ledgerHistory = $this->bitfinex_query('history', $ledgerDetails);
-			$intTot =0;
-			$balTot =0;
-			$paymentsTot = 0;
+			if($numDays == 0){
+				// days since start point
+				$numDays = ceil( (time() - $sinceLast)/86400);
+			}
 			$return =0;
-			foreach($ledgerHistory as $l){
-				// check its a swap payment //
-				if(strtolower($l['description']) == strtolower('Swap Payment on wallet deposit') || strtolower($l['description'])==strtolower('Margin Funding Payment on wallet Deposit') ){	
-					$sql = "INSERT into `".$config['db']['prefix']."Tracking` (`user_id`, `trans_cur`, `trans_id`, `date`, `dep_balance`,`swap_payment`,`average_return`) VALUES 
-						('".$this->db->escapeStr($this->userid)."', '".$this->db->escapeStr($c['curSym'])."', '".$this->db->escapeStr($l['timestamp'])."', '".$this->db->escapeStr(date('Y-m-d', $l['timestamp']))."', '".$this->db->escapeStr($l['balance'])."','".$this->db->escapeStr($l['amount'])."','".$this->db->escapeStr(round((($l['amount'] / $l['balance']) * 100),6))."')";
-					$upd = $this->db->iquery($sql);
-					if($upd['num'] >0){$return++;}
+			// we need to loop pull this since it will only return limited records per request
+			$numLoops = ceil($numDays / $splitDays);
+			for($x=0;$x<$numLoops;$x++){
+				if($x%15 == 1 && $x > 1){
+					if($showDetails){echo '<br>Pausing for a few seconds to avoid rate limit...';}
+					sleep(10);
+				}
+				$thisSince = ($x * 86400 * $splitDays) + $sinceLast;
+				$thisEnd = $thisSince + (86400 * $splitDays); 
+				if($showDetails){echo '<br>Running '.$c['curSym'].' Loop '.$x.': Start Time '.$thisSince.' ('.date('Y-m-d', $thisSince).') | End Time '.$thisEnd.' ('.date('Y-m-d', $thisEnd).')';}
+				
+				$ledgerDetails = array('currency' => $c['curSym'], 'since' => (string)$thisSince, 'until' => (string)($thisEnd), 'wallet' => 'deposit');
+				$ledgerHistory = $this->bitfinex_query('history', $ledgerDetails);
+				
+				
+				if(isset($ledgerHistory['error']) && $ledgerHistory['error'] =='ERR_RATE_LIMIT'){
+					// asking too fast, roll back $x-1 and wait 5 more seconds
+					$x--;
+					if($showDetails){echo '<br>Pausing because of rate limit error...';}
+					sleep(5);
+					continue;
+				}
+				else if(count($ledgerHistory) > 0 && !isset($ledgerHistory[0]['description'])){
+					//print_r($ledgerHistory);
+					if($showDetails){echo '<br>An error occured and we need to stop.  The last day run was '.date('Y-m-d', $lastRunTime);}
+					break;
+				}
+				else if(count($ledgerHistory)>0){
+					foreach($ledgerHistory as $l){
+						// check its a swap payment //
+						if(strtolower($l['description']) == strtolower('Swap Payment on wallet deposit') || strtolower($l['description'])==strtolower('Margin Funding Payment on wallet Deposit') ){	
+							if($showDetails){echo '<br>Found Record: '.$l['timestamp'].' - '.$c['curSym'].' '.date('Y-m-d', $l['timestamp']).' '.$l['amount'].' '.$l['balance'];}
+							$sql = "INSERT into `".$config['db']['prefix']."Tracking` (`user_id`, `trans_cur`, `trans_id`, `date`, `dep_balance`,`swap_payment`,`average_return`) VALUES 
+								('".$this->db->escapeStr($this->userid)."', '".$this->db->escapeStr($c['curSym'])."', '".$this->db->escapeStr($l['timestamp'])."', '".$this->db->escapeStr(date('Y-m-d', $l['timestamp']))."', '".$this->db->escapeStr($l['balance'])."','".$this->db->escapeStr($l['amount'])."','".$this->db->escapeStr(round((($l['amount'] / $l['balance']) * 100),6))."')";
+							$lastRunTime = $l['timestamp'];
+							$upd = $this->db->iquery($sql);
+							if($upd['id'] >0){$return++;}
+						}
+					}
 				}
 			}
+			
 		}
+		if($showDetails){echo '<br><strong>Updated '.$return.' Records!';}
 		return $return;
 	}
 	//
@@ -268,9 +309,11 @@ class Bitfinex{
 	}
 	
 	function bitfinex_getCurPrice($cur='BTC'){
-		$curPrice = $this->bitfinex_get('pubticker',strtolower($cur).'usd');
-		$this->cryptoCurPrice[$cur] = $curPrice['last_price'];
-		return $curPrice['last_price'];
+		if(!isset($this->cryptoCurPrice[$cur])){
+			$curPrice = $this->bitfinex_get('pubticker',strtolower($cur).'usd');
+			$this->cryptoCurPrice[$cur] = $curPrice['last_price'];
+		}
+		return $this->cryptoCurPrice[$cur];
 	}
 	
 	function bitfinex_createLoanOffers($lendArray, $cur='USD'){
