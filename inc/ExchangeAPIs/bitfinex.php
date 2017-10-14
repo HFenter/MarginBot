@@ -472,11 +472,13 @@ class Bitfinex{
 		//$intReturn = 0;
 		$curOffers = $this->bitfinex_get('offers');
 		foreach($curOffers as $o){
-			$this->cryptoPendingVal[strtoupper($o['currency'])] += $o['remaining_amount'];
-			$this->cryptoPendingOffers[strtoupper($o['currency'])]++;
-			$this->cryptoPendingIDS[strtoupper($o['currency'])][] = $o['id'];
-			$this->cryptoPendingLends[strtoupper($o['currency'])][] = $o;
-			$intReturn[strtoupper($o['currency'])] += ($o['remaining_amount']*( ($o['rate']/365)/100) );
+			if($o['direction']!="loan") {
+				$this->cryptoPendingVal[strtoupper($o['currency'])] += $o['remaining_amount'];
+				$this->cryptoPendingOffers[strtoupper($o['currency'])]++;
+				$this->cryptoPendingIDS[strtoupper($o['currency'])][] = $o['id'];
+				$this->cryptoPendingLends[strtoupper($o['currency'])][] = $o;
+				$intReturn[strtoupper($o['currency'])] += ($o['remaining_amount']*( ($o['rate']/365)/100) );
+			}
 		}
 		// fixed for divide by 0
 		if(count($this->cryptoPendingVal)>0){
