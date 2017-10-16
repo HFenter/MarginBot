@@ -376,7 +376,7 @@ class Bitfinex{
 					$amtEach = $splitAvailable;
 				}
 				else{
-					while( $amtEach < $minForLend ){
+					while( $amtEach < $minForLend && $numSplits >= 0 ){
 						$amtEach = floor(($splitAvailable / --$numSplits)*100)/100;
 					}
 				}
