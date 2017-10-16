@@ -399,12 +399,13 @@ class Bitfinex{
 							// NEW VERSION: ( 0.00365 / annual = 0.00001 / day )
 							$loans[$cur][$a]['rate'] = ( ($l['rate'] - 0.00365) > $minLendRateAnnual ? ($l['rate'] - 0.00365) : $minLendRateAnnual ) ;
 							//echo $loans[$a]['rate'].'<br>';
+							$lrate=$loans[$cur][$a]['rate']+0.00365;
 							
 							//how long should we lend this out... as a rule, 2 days so we can cycle and get a high turnover
 							// unless its above the threshold $this->actSettings['thirtyDayMin'], in which case we should lend it for the max 30 days
 							// (basically, the rate is higher than normal, lets keep this loan out as long as possible)
 							//  if $this->actSettings['thirtyDayMin'] = 0, always loan for 2 days, no matter what
-							$loans[$cur][$a]['time'] = (($this->actSettings['thirtyDayMin'][$cur]>0)&&($l['rate'] > ($this->actSettings['thirtyDayMin'][$cur] * 365)) ? 30 : 2);
+							$loans[$cur][$a]['time'] = (($this->actSettings['thirtyDayMin'][$cur]>0)&&($lrate > ($this->actSettings['thirtyDayMin'][$cur] * 365)) ? 30 : 2);
 							$nextlend += $gapClimb;
 							$a++;
 						}
@@ -471,11 +472,13 @@ class Bitfinex{
 		//$intReturn = 0;
 		$curOffers = $this->bitfinex_get('offers');
 		foreach($curOffers as $o){
-			$this->cryptoPendingVal[strtoupper($o['currency'])] += $o['remaining_amount'];
-			$this->cryptoPendingOffers[strtoupper($o['currency'])]++;
-			$this->cryptoPendingIDS[strtoupper($o['currency'])][] = $o['id'];
-			$this->cryptoPendingLends[strtoupper($o['currency'])][] = $o;
-			$intReturn[strtoupper($o['currency'])] += ($o['remaining_amount']*( ($o['rate']/365)/100) );
+			if($o['direction']!="loan") {
+				$this->cryptoPendingVal[strtoupper($o['currency'])] += $o['remaining_amount'];
+				$this->cryptoPendingOffers[strtoupper($o['currency'])]++;
+				$this->cryptoPendingIDS[strtoupper($o['currency'])][] = $o['id'];
+				$this->cryptoPendingLends[strtoupper($o['currency'])][] = $o;
+				$intReturn[strtoupper($o['currency'])] += ($o['remaining_amount']*( ($o['rate']/365)/100) );
+			}
 		}
 		// fixed for divide by 0
 		if(count($this->cryptoPendingVal)>0){
