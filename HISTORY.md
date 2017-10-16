@@ -29,3 +29,8 @@
 	* Updates to core trading engine
 	* Added Crytpo Lending.  Currently supports the full list of BFX lendable currencies (as of 8/17/2017)
 	* Lots of small tweaks, updates and fixes.
+	
+### v0.1.08
+	* Updates to UI
+	* Crypto History Tracking
+	* Historical Data Importer

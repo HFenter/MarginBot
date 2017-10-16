@@ -75,7 +75,7 @@ class Bitfinex{
         $req['request'] = '/v1/'.$method;
         $this->nonceInc += 1;
 		$req['nonce'] = (string)$this->nonceInc;
-		if($req['price']){$req['price'] = (string)$req['price'];}
+		if(array_key_exists('price', $req)){$req['price'] = (string)$req['price'];}
        
         // generate the POST data string
         $reqData = base64_encode(json_encode($req, true));
