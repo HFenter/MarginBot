@@ -126,12 +126,12 @@ $gen->checkCronStatus();
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+    <link href="favicon.ico" rel=icon>
 </head>
 <body>
 
 
-
+<? if($_SESSION['userid']!=''){ ?>
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
@@ -141,11 +141,11 @@ $gen->checkCronStatus();
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="index.php" title="Version <?=$config['app_version'].'.'.$config['app_version_minor'];?>"><?=$config['app_name'].' '.$config['app_version'];?></a>
+          <a class="navbar-brand" href="index.php" title="Version <?=$config['app_version'].'.'.$config['app_version_minor'];?>"><img src="img/MarginBotLogo.png" alt="MarginBot" class="img-responsive center-block" style="width:250px;"></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
  
-        <? if($_SESSION['userid']!=''){ ?>
+        
  
           <ul class="nav navbar-nav">
           	 <li class="dropdown">
@@ -194,11 +194,11 @@ $gen->checkCronStatus();
             </li>
             <li><a href="index.php?doLogout=1">Logout</a></li>
           </ul>
-          <? } ?>
+         
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-
+ <? } ?>
 
 <? 
 $gen->showSiteModals();

@@ -352,15 +352,28 @@ class Pages {
 	function showLoginPage(){
 	
 		echo '
-		
-		
+		<img src="img/MarginBotLogo.png" alt="MarginBot" class="img-responsive center-block">
 		<form class="form-signin" role="form" method="post" action="index.php">
-			<h2 class="form-signin-heading">Please sign in</h2>
-			<label for="inputEmail" class="sr-only">User Name or Email Address</label>
-			<input type="username" id="inputEmail" class="form-control" placeholder="User Name or Email" required="" autofocus="" name="login_email">
-			<label for="inputPassword" class="sr-only">Password</label>
-			<input type="password" id="inputPassword" class="form-control" placeholder="Password" required="" name="login_password">
+		<div class="panel panel-default">
+		  <div class="panel-heading">
+			<h3 class="panel-title">Please sign in</h3>
+		  </div>
+		  <div class="panel-body">
+			<div class="form-group">
+				<label for="inputEmail" class="sr-only">User Name or Email Address</label>
+				<input type="username" id="inputEmail" class="form-control" placeholder="User Name or Email" required="" autofocus="" name="login_email">
+			</div>
+			<div class="form-group">
+				<label for="inputPassword" class="sr-only">Password</label>
+				<input type="password" id="inputPassword" class="form-control" placeholder="Password" required="" name="login_password">
+			</div>
+			
 			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+		  </div>
+		</div>
+		
+			
+
 		  </form>
 		  ';
 	  

@@ -405,7 +405,7 @@ class Bitfinex{
 							// unless its above the threshold $this->actSettings['thirtyDayMin'], in which case we should lend it for the max 30 days
 							// (basically, the rate is higher than normal, lets keep this loan out as long as possible)
 							//  if $this->actSettings['thirtyDayMin'] = 0, always loan for 2 days, no matter what
-							$loans[$cur][$a]['time'] = (($this->actSettings['thirtyDayMin'][$cur]>0)&&($lrate > ($this->actSettings['thirtyDayMin'][$cur] * 365)) ? 30 : 2);
+							$loans[$cur][$a]['time'] = (($this->actSettings['thirtyDayMin'][$cur]>0)&&($lrate >= ($this->actSettings['thirtyDayMin'][$cur] * 365)) ? 30 : 2);
 							$nextlend += $gapClimb;
 							$a++;
 						}
