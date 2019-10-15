@@ -24,7 +24,7 @@ class General {
 				
 				$sql = "SELECT * from `".$config['db']['prefix']."CurPairs` WHERE status = '1'";
 				$crypto = $this->db->query($sql);
-				if(count($crpto)<=0){
+				if(count($crypto)<=0){
 					foreach($crypto as $c){
 						// make it into a pretty array
 						$this->cryptoPairs[$c['curSym']] = $c;

@@ -375,9 +375,9 @@ class Accounts{
 							
 							<tr>';
 							
-							if($this->bfx->actSettings['extractAmt'] > 0 ){
+							if($this->bfx->actSettings['extractAmt'][$thisCurrency] > 0 ){
 								echo '
-									<td class="mid">'.($this->bfx->cryptoAvailable[$thisCurrency] >= $this->bfx->actSettings['extractAmt'][$thisCurrency] ? '<span class="text-success"><strong>'.$gen->moneyFormat($this->bfx->actSettings['extractAmt'][$thisCurrency]).'</strong>' : '<span class="text-danger">'.$gen->moneyFormat($this->bfx->cryptoAvailable) ).' of '.$gen->moneyFormat($this->bfx->actSettings['extractAmt'][$thisCurrency]).' USD</span></td>
+									<td class="mid">'.($this->bfx->cryptoAvailable[$thisCurrency] >= $this->bfx->actSettings['extractAmt'][$thisCurrency] ? '<span class="text-success"><strong>'.$gen->moneyFormat($this->bfx->actSettings['extractAmt'][$thisCurrency]).'</strong>' : '<span class="text-danger">'.$gen->moneyFormat($this->bfx->cryptoAvailable[$thisCurrency]) ).' of '.$gen->moneyFormat($this->bfx->actSettings['extractAmt'][$thisCurrency]).' USD</span></td>
 									<td class="mid">'.($this->bfx->cryptoAvailable[$thisCurrency] >= $this->bfx->actSettings['extractAmt'][$thisCurrency] ? '<span class="text-success"><strong>AVAILABLE NOW</strong>' : '<span class="text-danger">'.$gen->howLongToExpire($this->getTimeToExtract())).'</span></td>
 								';
 							}
