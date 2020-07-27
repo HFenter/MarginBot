@@ -150,7 +150,7 @@ if($_REQUEST['doUpdate']==2){
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('11', 'ZEC', 'Zcash', '1')");
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('12', 'XRP', 'Ripple', '1')");
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('13', 'LTC', 'Litecoin', '1')");
-	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('14', 'XML', 'Stellar Lumen', '1')");
+	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('14', 'XLM', 'Stellar Lumen', '1')");
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('15', 'UST', 'Tether USDt', '1')");
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('16', 'BTG', 'Bitcoin Gold', '1')");
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('17', 'BSV', 'Bitcoin SV', '1')");
