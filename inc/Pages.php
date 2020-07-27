@@ -8,7 +8,7 @@ class Pages {
 	var $title;
 
 	function __construct() {
-		$this->activePage = $_REQUEST['page'];
+		$this->activePage = isset($_REQUEST['page']) ? $_REQUEST['page'] : '';
 		if($this->activePage==''){
 			$this->activePage='home';
 		}
