@@ -1,4 +1,4 @@
-<?
+<?php
 // App Version and Support Info
 $config['app_support_url'] = 'http://therovegroup.com/MBot/';
 $config['app_support_email'] = 'marginbot@therovegroup.com';
