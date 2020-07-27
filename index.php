@@ -1,4 +1,4 @@
-<?
+<?php
 require_once('inc/header.php');
 
 $gen->showWarnings($warning);
