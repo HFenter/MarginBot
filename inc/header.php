@@ -1,4 +1,4 @@
-<?
+<?php
 // apparently a lot of people leave notice reporting on when installing PHP,
 // lets not do that.
 error_reporting(E_ALL & ~E_NOTICE);
@@ -200,7 +200,7 @@ $gen->checkCronStatus();
     </nav>
  <? } ?>
 
-<? 
+<?php
 $gen->showSiteModals();
 
 // is config writable?  warn them//
