@@ -1,5 +1,5 @@
 <?php
-date_default_timezone_set('America/Los_Angeles');
+date_default_timezone_set('Europe/London');
 setlocale(LC_MONETARY, 'en_US');
 session_start();
 require_once('version_info.php');
