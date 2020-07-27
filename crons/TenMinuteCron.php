@@ -1,4 +1,4 @@
-<?
+<?php
 /*//////////////////////////////
   10 Minute Cron Job				
   Should be run very 10 minutes	
