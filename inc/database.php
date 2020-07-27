@@ -7,7 +7,7 @@ class Database{
 	var $database_host;    
 	var $database_link;
 	
-    function Database(){
+    function __construct(){
     	global $config;
     	//print_r($config);
         $this->database_user = $config['db']['dbuser'];
