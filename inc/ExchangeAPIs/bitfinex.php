@@ -166,7 +166,7 @@ class Bitfinex{
 			if($sinceLast==0){
 				$sql = "SELECT trans_id from `".$config['db']['prefix']."Tracking` WHERE user_id = '".$this->db->escapeStr($this->userid)."' AND trans_cur = '".$this->db->escapeStr($c['curSym'])."' ORDER BY trans_id DESC LIMIT 1";
 				$lastId = $this->db->query($sql);
-				$sinceLast = $lastId[0]['id']+1;
+				$sinceLast = isset($lastId[0]['trans_id']) ? $lastId[0]['trans_id'] + 1 : 0;
 				if($sinceLast <=1){
 					/* No Entries, Go Back 10 Days */
 					$sinceLast = strtotime("-10 day");
@@ -188,7 +188,7 @@ class Bitfinex{
 				$thisEnd = $thisSince + (86400 * $splitDays); 
 				if($showDetails){echo '<br>Running '.$c['curSym'].' Loop '.$x.': Start Time '.$thisSince.' ('.date('Y-m-d', $thisSince).') | End Time '.$thisEnd.' ('.date('Y-m-d', $thisEnd).')';}
 				
-				$ledgerDetails = array('currency' => $c['curSym'], 'since' => (string)$thisSince, 'until' => (string)($thisEnd), 'wallet' => 'deposit');
+				$ledgerDetails = array('currency' => $c['curSym'], 'wallet' => 'deposit');
 				$ledgerHistory = $this->bitfinex_query('history', $ledgerDetails);
 				
 				
@@ -442,9 +442,18 @@ class Bitfinex{
 		unset($intReturn);// = 0;
 		$curLends = $this->bitfinex_get('credits');
 		foreach($curLends as $c){
-			$this->cryptoCurrentLends[strtoupper($c['currency'])][] = $c;
-			$this->cryptoCurrentLendVal[strtoupper($c['currency'])] += $c['amount'];
-			$intReturn[strtoupper($c['currency'])] += ($c['amount']*( ($c['rate']/365)/100) );
+			$offerDto = strtoupper($c['currency']);
+			$this->cryptoCurrentLends[$offerDto][] = $c;
+
+			if(!isset($this->cryptoCurrentLendVal[$offerDto])){
+				$this->cryptoCurrentLendVal[$offerDto] = 0;
+			}
+			$this->cryptoCurrentLendVal[$offerDto] += $c['amount'];
+
+			if(!isset($intReturn[$offerDto])){
+				$intReturn[$offerDto] = 0;
+			}			
+			$intReturn[$offerDto] += ($c['amount']*( ($c['rate']/365)/100) );
 		}
 		// fixed for divide by 0
 		if(count($this->cryptoCurrentLendVal)>0){
@@ -463,21 +472,34 @@ class Bitfinex{
 	/* Grab current pending loans */
 	function bitfinex_getPendLoans(){
 		// empty existing data
-		unset($this->cryptoPendingVal);
-		unset($this->cryptoPendingOffers);
-		unset($this->cryptoPendingIDS);
-		unset($this->cryptoPendingLends);
-		unset($intReturn);
+		$this->cryptoPendingVal = array();
+		$this->cryptoPendingOffers = array();
+		$this->cryptoPendingIDS = array();
+		$this->cryptoPendingLends = array();;
+		$intReturn = array();
 		
 		//$intReturn = 0;
 		$curOffers = $this->bitfinex_get('offers');
 		foreach($curOffers as $o){
+			$offerDto = strtoupper($o['currency']);
 			if($o['direction']!="loan") {
-				$this->cryptoPendingVal[strtoupper($o['currency'])] += $o['remaining_amount'];
-				$this->cryptoPendingOffers[strtoupper($o['currency'])]++;
-				$this->cryptoPendingIDS[strtoupper($o['currency'])][] = $o['id'];
-				$this->cryptoPendingLends[strtoupper($o['currency'])][] = $o;
-				$intReturn[strtoupper($o['currency'])] += ($o['remaining_amount']*( ($o['rate']/365)/100) );
+				if(!isset($this->cryptoPendingVal[$offerDto])){
+					$this->cryptoPendingVal[$offerDto] = 0;
+				}
+				$this->cryptoPendingVal[$offerDto] += $o['remaining_amount'];
+
+				if(!isset($this->cryptoPendingOffers[$offerDto])){
+					$this->cryptoPendingOffers[$offerDto] = 0;
+				}
+				$this->cryptoPendingOffers[$offerDto]++;
+
+				$this->cryptoPendingIDS[$offerDto][] = $o['id'];
+				$this->cryptoPendingLends[$offerDto][] = $o;
+
+				if(!isset($intReturn[$offerDto])){
+					$intReturn[$offerDto] = 0;
+				}
+				$intReturn[$offerDto] += ($o['remaining_amount']*( ($o['rate']/365)/100) );
 			}
 		}
 		// fixed for divide by 0
