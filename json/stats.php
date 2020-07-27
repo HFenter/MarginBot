@@ -1,4 +1,4 @@
-<?
+<?php
 /*//////////////////////////////
 JSON Return array of stats
 Needs a logged in session in order to show anything
