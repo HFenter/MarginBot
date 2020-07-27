@@ -1,4 +1,4 @@
-<?
+<?php
 // file configs //
 require_once("inc/config.php");
 $alert = array();
@@ -29,8 +29,8 @@ if($_REQUEST['doInstall']==1){
 			  `trans_cur` varchar(10) DEFAULT NULL,
 			  `trans_id` int(12) DEFAULT NULL,
 			  `date` date DEFAULT NULL,
-			  `dep_balance` decimal(12,8) DEFAULT NULL,
-			  `swap_payment` decimal(12,8) DEFAULT NULL,
+			  `dep_balance` decimal(18,8) DEFAULT NULL,
+			  `swap_payment` decimal(18,8) DEFAULT NULL,
 			  `average_return` decimal(8,6) DEFAULT NULL,
 			  PRIMARY KEY (`id`),
 			  UNIQUE KEY `uniquieKeys` (`user_id`,`trans_id`,`trans_cur`) USING BTREE
@@ -109,6 +109,12 @@ if($_REQUEST['doInstall']==1){
 				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('11', 'ZEC', 'Zcash', '1')");
 				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('12', 'XRP', 'Ripple', '1')");
 				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('13', 'LTC', 'Litecoin', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('14', 'XML', 'Stellar Lumen', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('15', 'UST', 'Tether USDt', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('16', 'BTG', 'Bitcoin Gold', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('17', 'BSV', 'Bitcoin SV', '1')");
+				$mysqli->query("INSERT INTO `".$tablePre."CurPairs` VALUES ('18', 'BAB', 'Bitcoin Cash', '1')");				
+
 				
 			}
 			
@@ -116,7 +122,7 @@ if($_REQUEST['doInstall']==1){
 				// tables seemed to create ok, lets write the config file //
 				
 $configData = '<?php
-date_default_timezone_set(\'America/Los_Angeles\');
+date_default_timezone_set(\'Europe/London\');
 setlocale(LC_MONETARY, \'en_US\');
 session_start();
 require_once(\'version_info.php\');
