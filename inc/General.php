@@ -24,7 +24,7 @@ class General {
 				
 				$sql = "SELECT * from `".$config['db']['prefix']."CurPairs` WHERE status = '1'";
 				$crypto = $this->db->query($sql);
-				if(count($crypto)<=0){
+				if(count($crypto) > 0){
 					foreach($crypto as $c){
 						// make it into a pretty array
 						$this->cryptoPairs[$c['curSym']] = $c;
@@ -101,7 +101,7 @@ class General {
 	public function cutText($string, $length, $noHellip=0){
 	    if(strlen($string) > $length){
 			$lengthTrim = $length;
-			while ($string{$length} != " " && $length > 0) {
+			while ($string[$length] != " " && $length > 0) {
 		        $length--;
 		    }
 			if($length != 0){
@@ -526,6 +526,7 @@ class General {
 	}
 	
 	function showDisclaimer(){
+		global $config;
 		echo '
 			<!-- Disclaimer Modal -->
 			<div class="modal fade" id="disclaimerModal" tabindex="-1" role="dialog" aria-labelledby="disclaimerModalLabel" aria-hidden="true">
@@ -564,6 +565,7 @@ class General {
 	
 	function showCurrencyNav(){
 		// bitfinex API is very inconsistant with upper and lower case
+		$return = '';
 		foreach($this->cryptoPairs as $c){
 			$return .= '<li><a href="index.php?funding='.$c['curSym'].'">'.$c['curName'].'</a></li>
 			';
@@ -572,6 +574,7 @@ class General {
 	}
 	function showReturnsNav(){
 		// bitfinex API is very inconsistant with upper and lower case
+		$return = '';
 		foreach($this->cryptoPairs as $c){
 			$return .= '<li><a href="index.php?page=viewReturns&funding='.$c['curSym'].'">'.$c['curName'].'</a></li>
 			';
@@ -579,6 +582,7 @@ class General {
 		return $return;
 	}
 	function showCurSelect($default = 'USD'){
+		$return = '';
 		foreach($this->cryptoPairs as $c){
 			$return .= '<option value="'.$c['curSym'].'" '.($default == $c['curSym'] ? 'SELECTED' :'').'>'.$c['curName'].'</option>';
 		}
