@@ -1,4 +1,4 @@
-<?
+<?php
 /*//////////////////////////////
   Hourly Cron Job				
   Should be run once an hour	
