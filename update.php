@@ -1,4 +1,4 @@
-<?
+<?php
 // file configs //
 require_once("inc/config.php");
 
@@ -136,7 +136,7 @@ if($_REQUEST['doUpdate']==2){
 				  `curName` varchar(100) DEFAULT NULL,
 				  `status` tinyint(1) DEFAULT NULL,
 				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8");
+				) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8");
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('1', 'USD', 'US Dollars', '1')");
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('2', 'BTC', 'Bitcoin', '1')");
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('3', 'IOT', 'Iota', '1')");
@@ -149,7 +149,14 @@ if($_REQUEST['doUpdate']==2){
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('10', 'XMR', 'Monero', '1')");
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('11', 'ZEC', 'Zcash', '1')");
 	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('12', 'XRP', 'Ripple', '1')");
-	$updateWorked = $db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('13', 'LTC', 'Litecoin', '1')");
+	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('13', 'LTC', 'Litecoin', '1')");
+	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('14', 'XML', 'Stellar Lumen', '1')");
+	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('15', 'UST', 'Tether USDt', '1')");
+	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('16', 'BTG', 'Bitcoin Gold', '1')");
+	$db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('17', 'BSV', 'Bitcoin SV', '1')");
+	$updateWorked = $db->iquery("INSERT INTO `".$config['db']['prefix']."CurPairs` VALUES ('18', 'BAB', 'Bitcoin Cash', '1')");	
+
+
 
 	if ( $updateWorked['num']<=0 ){
 		 $warning[] = "Table creation failed: (" . $db->database_link->errno . ") " . $db->database_link->error;
