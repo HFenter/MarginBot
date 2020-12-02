@@ -5,6 +5,7 @@ $alert = array();
 $warning = array();
 
 $configFile = getcwd().'/inc/config.php';
+$configJsonPath = getcwd().'/inc/config.json';
 // This is a submit, lets do some stuff //
 if($_REQUEST['doInstall']==1){
 	//Install Step 1
@@ -115,37 +116,27 @@ if($_REQUEST['doInstall']==1){
 			
 			if(count($warning)==0){
 				// tables seemed to create ok, lets write the config file //
-				
-$configData = '<?php
-date_default_timezone_set(\'America/Los_Angeles\');
-setlocale(LC_MONETARY, \'en_US\');
-session_start();
-require_once(\'version_info.php\');
 
-// Local Database Connection Info //
-$config[\'db\'][\'host\'] = \''.$_REQUEST['installDBHost'].'\';
-$config[\'db\'][\'dbname\'] = \''.$_REQUEST['installDBName'].'\';
-$config[\'db\'][\'dbuser\'] = \''.$_REQUEST['installDBUser'].'\';
-$config[\'db\'][\'dbpass\'] = \''.$_REQUEST['installDBPassword'].'\';
-
-// this is included in front of each database table name
-$config[\'db\'][\'prefix\'] = \''.$_REQUEST['installDBPrefix'].'\';
-
-//Local Admin Email //
-$config[\'admin_email\'] = \''.$_REQUEST['installEmail'].'\';
-
-// Current Fees Charged by BFX for Margin Swaps (15% as of Nov. 2014)
-$config[\'curFeesBFX\'] = '.$_REQUEST['installBFXFees'].';
-?>';
-			
+				$configJsonData = array(
+					"database" => array(
+						"host"   => $_REQUEST['installDBHost'],
+						"dbname" => $_REQUEST['installDBName'],
+						"dbuser" => $_REQUEST['installDBUser'],
+						"dbpass" => $_REQUEST['installDBPassword'],
+						"prefix" => $_REQUEST['installDBPrefix']
+					),
+					"email" => $_REQUEST['installEmail'],
+					"fee"   => $_REQUEST['installBFXFees']
+				);
 				
 				if (!$handle = fopen($configFile, 'w')) {
 					 $warning[] = "Could Not open file ($configFile)";
 					 //exit;
 				}
 				// Write to the config file //
-				if (fwrite($handle, $configData) === FALSE) {
-					$warning[] = "Cannot write to file ($configFile)";
+
+				if (file_put_contents($configJsonPath, json_encode($configJsonData)) === FALSE) {
+					$warning[] = "Cannot write to file ($configJsonPath)";
 					//exit;
 				}
 				else{
