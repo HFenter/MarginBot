@@ -62,6 +62,7 @@ if($_REQUEST['doInstall']==1){
 				  `USDgapBottom` varchar(12) DEFAULT NULL,
 				  `USDgapTop` varchar(12) DEFAULT NULL,
 				  `thirtyDayMin` varchar(12) DEFAULT NULL,
+				  `hundredDayMin` varchar(12) DEFAULT NULL,
 				  `highholdlimit` varchar(12) DEFAULT NULL,
 				  `highholdamt` varchar(12) DEFAULT NULL,
 				  `extractAmt` varchar(12) DEFAULT NULL,
@@ -223,13 +224,13 @@ else if($_REQUEST['doInstall']==2){
 			
 			if($newUser['id']!=0){
 				//  Set default settings for the account //
-				$sql = "INSERT into `".$config['db']['prefix']."Vars` (`userid`,`curType`,`minlendrate`,`spreadlend`,`USDgapBottom`,`USDgapTop`,`thirtyDayMin`,`highholdlimit`,`highholdamt` )
+				$sql = "INSERT into `".$config['db']['prefix']."Vars` (`userid`,`curType`,`minlendrate`,`spreadlend`,`USDgapBottom`,`USDgapTop`,`thirtyDayMin`,`hundredDayMin`,`highholdlimit`,`highholdamt` )
 					 VALUES
-					 ( '".$newUser['id']."', 'USD', '0.0650', '3', '25000', '100000', '0.1500', '0.3500', '0' )";
+					 ( '".$newUser['id']."', 'USD', '0.0650', '3', '25000', '100000', '0.1500', '0.2500', '0.3500', '0' )";
 				$newActSettings = $db->iquery($sql);
-				$sql = "INSERT into `".$config['db']['prefix']."Vars` (`userid`,`curType`,`minlendrate`,`spreadlend`,`USDgapBottom`,`USDgapTop`,`thirtyDayMin`,`highholdlimit`,`highholdamt` )
+				$sql = "INSERT into `".$config['db']['prefix']."Vars` (`userid`,`curType`,`minlendrate`,`spreadlend`,`USDgapBottom`,`USDgapTop`,`thirtyDayMin`,`hundredDayMin`,`highholdlimit`,`highholdamt` )
 					 VALUES
-					 ( '".$newUser['id']."', 'BTC', '0.0150', '2', '2', '10', '0.1500', '0.3500', '0' )";
+					 ( '".$newUser['id']."', 'BTC', '0.0150', '2', '2', '10', '0.1500', '0.2500', '0.3500', '0' )";
 				$newActSettings = $db->iquery($sql);
 				
 				// Success, tell them they need to login now //
