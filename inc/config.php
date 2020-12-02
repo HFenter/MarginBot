@@ -5,7 +5,8 @@ session_start();
 require_once('version_info.php');
 
 // Local Database Connection Info //
-$privateInfo = json_decode(file_get_contents("inc/config.json") , true);
+$fileContent = file_exists('inc/config.json') ? file_get_contents('inc/config.json') : file_get_contents('../inc/config.json');
+$privateInfo = json_decode($fileContent , true);
 $config['db']['host'] = $privateInfo['database']['host'];
 $config['db']['dbname'] = $privateInfo['database']['dbname'];
 $config['db']['dbuser'] = $privateInfo['database']['dbuser'];
