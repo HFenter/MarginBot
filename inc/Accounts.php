@@ -151,9 +151,9 @@ class Accounts{
 				
 				if($newUser['id']!=0){
 					//  Set default settings for the account //
-					$sql = "INSERT into `".$config['db']['prefix']."Vars` (`id`,`minlendrate`,`spreadlend`,`USDgapBottom`,`USDgapTop`,`thirtyDayMin`,`highholdlimit`,`highholdamt` )
+					$sql = "INSERT into `".$config['db']['prefix']."Vars` (`id`,`minlendrate`,`spreadlend`,`USDgapBottom`,`USDgapTop`,`thirtyDayMin`,`hundredDayMin`,`highholdlimit`,`highholdamt` )
 						 VALUES
-						 ( '".$newUser['id']."', '0.0650', '3', '25000', '100000', '0.1500', '0.3500', '0' )";
+						 ( '".$newUser['id']."', '0.0650', '3', '25000', '100000', '0.1500', '0.2500', '0.3500', '0' )";
 					$newActSettings = $this->db->iquery($sql);
 					$ret['page']=2;
 					$ret['newaccount']=$newUser['id'];
@@ -276,6 +276,12 @@ class Accounts{
 									</div>
 									Minimum<br>for 30 Day
 								</th>
+								<th class="mid" style="width: 110px;">
+									<div style="height:25px;padding-top:8px;" aria-label="Help" class="pull-right"  data-toggle="popover" data-placement="right" title="Minimum for 120 Day Loans" data-content="Lowest Daily Interest Rate at which your loans will be offered for 120 days instead of 30.  Set this to insure your loans earn you a higher interest rate for longer periods durring flash lending runs.  If you want all loans to stay on a 2 day cycle, set this to 0.">
+									  <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+									</div>
+									Minimum<br>for 120 Day
+								</th>
 								<th class="mid" style="width: 100px;">
 									<div style="height:25px;padding-top:8px;" aria-label="Help" class="pull-right"  data-toggle="popover" data-placement="right" title="High Hold Amount" data-content="Amount of money you want to keep offered at the High Hold Rate.  High Hold is used to keep a portion of your Deposit Wallet offered on Loan at a much higher rate than Marginbot would be likely to set in a given day.  This allows you to catch Flash Margin runs and lend at least some money at a higher than normal rate. Set this to 0 if you don\'t want to keep money set aside for Flash Runs.">
 									  <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
@@ -306,6 +312,12 @@ class Accounts{
 								</td>
 								<td>
 									<div class="input-group">
+										<input type="text" name="hundredDayMin" value="'.number_format($this->bfx->actSettings['hundredDayMin'][$thisCurrency], 5).'" class="form-control autoPercent">
+										<span class="input-group-addon">%</span>
+									</div>
+								</td>
+								<td>
+									<div class="input-group">
 										<span class="input-group-addon">'.$thisCurrency.'</span>
 										<input type="text" name="highholdamt" value="'.number_format($this->bfx->actSettings['highholdamt'][$thisCurrency], 2).'" class="form-control autoCurrency">
 									</div>
@@ -331,6 +343,7 @@ class Accounts{
 									Gap Top
 								</th>
 								<th></th>
+								<th></th>
 							</tr>
 							<tr>
 								<td colspan="2">
@@ -345,6 +358,7 @@ class Accounts{
 										<input type="text" name="USDgapTop" value="'.number_format($this->bfx->actSettings['USDgapTop'][$thisCurrency], 2).'" class="form-control autoCurrency">
 									</div>
 								</td>
+								<td></td>
 								<td></td>
 							</tr>
 						</table>
@@ -526,6 +540,7 @@ class Accounts{
 		$USDgapBottom = preg_replace('/[^0-9.]/', '', $_REQUEST['USDgapBottom']);
 		$USDgapTop = preg_replace('/[^0-9.]/', '', $_REQUEST['USDgapTop']);
 		$thirtyDayMin = preg_replace('/[^0-9.]/', '', $_REQUEST['thirtyDayMin']);
+		$hundredDayMin = preg_replace('/[^0-9.]/', '', $_REQUEST['hundredDayMin']);
 		$highholdlimit = preg_replace('/[^0-9.]/', '', $_REQUEST['highholdlimit']);
 		$highholdamt = preg_replace('/[^0-9.]/', '', $_REQUEST['highholdamt']);
 		
@@ -535,6 +550,7 @@ class Accounts{
 		$sql = "UPDATE `".$config['db']['prefix']."Vars` SET  minlendrate = '".$this->db->escapeStr($minlendrate)."', spreadlend = '".$this->db->escapeStr($spreadlend)."',
 				USDgapBottom = '".$this->db->escapeStr($USDgapBottom)."', USDgapTop = '".$this->db->escapeStr($USDgapTop)."', 
 				thirtyDayMin = '".$this->db->escapeStr($thirtyDayMin)."', 
+				hundredDayMin = '".$this->db->escapeStr($hundredDayMin)."', 
 				highholdlimit = '".$this->db->escapeStr($highholdlimit)."', 
 				highholdamt = '".$this->db->escapeStr($highholdamt)."'
 				 WHERE userid = '".$this->db->escapeStr($this->userid)."' AND curType = '".$this->db->escapeStr($_REQUEST['curType'])."' LIMIT 1";
@@ -546,6 +562,7 @@ class Accounts{
 						`USDgapBottom`,
 						`USDgapTop`,
 						`thirtyDayMin`,
+						`hundredDayMin`,
 						`highholdlimit`,
 						`highholdamt`,
 						`userid`,
@@ -558,6 +575,7 @@ class Accounts{
 						'".$this->db->escapeStr($USDgapBottom)."',
 						'".$this->db->escapeStr($USDgapTop)."', 
 						'".$this->db->escapeStr($thirtyDayMin)."', 
+						'".$this->db->escapeStr($hundredDayMin)."', 
 						'".$this->db->escapeStr($highholdlimit)."',
 						'".$this->db->escapeStr($highholdamt)."',
 						'".$this->db->escapeStr($this->userid)."',
