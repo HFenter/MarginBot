@@ -363,8 +363,8 @@ class Bitfinex{
 				//checking to make sure the highhold isn't more than total available too...
 				$loans[$cur][0]['amt'] = ($this->actSettings['highholdamt'][$cur] > $ca ? $ca : $this->actSettings['highholdamt'][$cur]);
 				$loans[$cur][0]['rate'] = ($this->actSettings['highholdlimit'][$cur]*365);
-				// always loan out highholds for 30 days... bascially we're pretty sure this is a high rate loan
-				$loans[$cur][0]['time'] = 30;				
+				// always loan out highholds for 120 days... bascially we're pretty sure this is a high rate loan
+				$loans[$cur][0]['time'] = 120;				
 			}
 			// is there anything left after the highhold?  if so, lets split it up //
 			if( $splitAvailable >= $minForLend ){
@@ -405,7 +405,15 @@ class Bitfinex{
 							// unless its above the threshold $this->actSettings['thirtyDayMin'], in which case we should lend it for the max 30 days
 							// (basically, the rate is higher than normal, lets keep this loan out as long as possible)
 							//  if $this->actSettings['thirtyDayMin'] = 0, always loan for 2 days, no matter what
-							$loans[$cur][$a]['time'] = (($this->actSettings['thirtyDayMin'][$cur]>0)&&($lrate >= ($this->actSettings['thirtyDayMin'][$cur] * 365)) ? 30 : 2);
+							if ($this->actSettings['hundredDayMin'][$cur] > 0 && $lrate >= $this->actSettings['hundredDayMin'][$cur] * 365){
+								$loans[$cur][$a]['time'] = 120;
+							}
+							else if ($this->actSettings['thirtyDayMin'][$cur] > 0 && $lrate >= $this->actSettings['thirtyDayMin'][$cur] * 365){
+								$loans[$cur][$a]['time'] = 30;
+							}
+							else {
+								$loans[$cur][$a]['time'] = 2;
+							}
 							$nextlend += $gapClimb;
 							$a++;
 						}
@@ -511,6 +519,7 @@ class Bitfinex{
 			$this->actSettings['USDgapBottom'][strtoupper($u['curType'])] 	= $u['USDgapBottom'];
 			$this->actSettings['USDgapTop'][strtoupper($u['curType'])] 		= $u['USDgapTop'];
 			$this->actSettings['thirtyDayMin'][strtoupper($u['curType'])] 	= $u['thirtyDayMin'];
+			$this->actSettings['hundredDayMin'][strtoupper($u['curType'])] 	= $u['hundredDayMin'];
 			$this->actSettings['highholdlimit'][strtoupper($u['curType'])] 	= $u['highholdlimit'];
 			$this->actSettings['highholdamt'][strtoupper($u['curType'])] 	= $u['highholdamt'];
 			$this->actSettings['extractAmt'][strtoupper($u['curType'])] 	= $u['extractAmt'];
